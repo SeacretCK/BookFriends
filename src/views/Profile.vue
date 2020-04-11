@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <section class="section">
     <h1>Your Profile</h1>
     <p>You would only see this when logged in</p>
     <p>Change your user info</p>
-  </div>  
+  </section>
 </template>
 
 <script>
@@ -12,6 +12,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 
 </style>

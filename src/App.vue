@@ -1,28 +1,21 @@
 <template>
   <div id="app">
-    <Navigation/>
+    <Header/>
     <router-view/>
   </div>
 </template>
 
 <script>
-import Navigation from "@/components/Navigation.vue"
+import Header from "@/components/Header.vue"
 
 export default {
   name: 'App',
   components: {
-    Navigation
+    Header
   }
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #444;
-}
 
 </style>
