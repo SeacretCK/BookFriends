@@ -49,8 +49,15 @@ export default {
       } else {
         this.readMore = false;
       }
-    
     }
+  },
+  created() {
+      if (this.bookInfo[0].details.description.length > 1200) {
+        this.readMore = true;
+        this.fullDescription = false;
+      } else {
+        this.readMore = false;
+      }
   },
   filters: {
     trimLength(val) {
