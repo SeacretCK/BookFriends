@@ -16,7 +16,7 @@
     <section class="section section-books">
       <h2 class="books__heading">Most discussed books this week</h2>
       <div class="books__container">
-        <div v-for="(book, index) in mostDiscussedBooksSorted" :key="index" class="books__item" @click="bookDetails(book.number)">
+        <div v-for="book in mostDiscussedBooksSorted" :key="book.bookId" class="books__item" @click="bookDetails(book.number)">
           <h3 class="book__title">  {{ book.details.title }} </h3>
           <p class="book__author"> {{ book.details.authors.toString() }} </p>
           <div class="book__image">
@@ -31,7 +31,7 @@
 <script>
 import Login from "@/components/Login.vue";
 import BookInfoModal from "@/components/BookInfoModal.vue";
- 
+import { mapActions, mapGetters } from 'vuex' 
 
 export default {
   name: 'Home',
@@ -46,7 +46,15 @@ export default {
       clickedBookObject: null
     }
   },
+  created() {
+    console.log("created Home.vue - before dispatch('setMostDiscussedBook')")
+    this.setMostDiscussedBooks();
+    console.log("created Home.vue - after dispatch('setMostDiscussedBook')")
+  },
   methods: {
+    ...mapActions([
+      "setMostDiscussedBooks"
+    ]),
     bookDetails(number) {
       this.showBookInfoModal = true;
       this.clickedBookNumber = number;
@@ -59,15 +67,16 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      "getMostDiscussedBooks"
+    ]),
     mostDiscussedBooksSorted() {
-      return this.$store.getters.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original array (like sort would)
+      console.log("get the MostDiscussedBooks from the store to display in Home.vue");
+      return this.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original array (like sort would)
     },
     clickedBookInfo() {
       return this.mostDiscussedBooksSorted.filter(item => item.number === this.clickedBookNumber)
     }
-  },
-  created() {
-    this.$store.dispatch("setMostDiscussedBooks")
   }
 }
 </script>

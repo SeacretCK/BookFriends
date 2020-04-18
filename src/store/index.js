@@ -19,24 +19,40 @@ export default new Vuex.Store({
         bookId: "yXbkAF7w4twC"
       }
     ],
+    mostDiscussedBooksDetails: [],
     apiKey: "AIzaSyAiFCyH0fZG1Ox7mvFncKsaQ2ms61D8t5Y"
   },
   mutations: {
     setMostDiscussedBooks: state => {
+      console.log("store - before mutation('setMostDiscussedBooks')");
+      state.mostDiscussedBooksDetails = [];
       state.mostDiscussedBooks.forEach(book => {
         fetch(`https://www.googleapis.com/books/v1/volumes/${book.bookId}?key=${state.apiKey}`)
             .then(response => response.json())
-            .then(data => book.details = data.volumeInfo)
+            .then(data => {
+              state.mostDiscussedBooksDetails.push(
+                {
+                  number: book.number,
+                  bookId: book.bookId,
+                  details: data.volumeInfo
+                }
+              );
+            })
             .catch(error => console.log(error))
       })
-      console.log(state.mostDiscussedBooks);
+      console.log("store - after mutation('setMostDiscussedBooks')", state.mostDiscussedBooksDetails);
     }
   },
   actions: {
-    setMostDiscussedBooks: context => context.commit("setMostDiscussedBooks")
+    setMostDiscussedBooks: ({ commit }) => {
+      console.log("store - action - before commit('setMostDiscussedBooks')");
+      commit("setMostDiscussedBooks");
+      console.log("store - action - after commit('setMostDiscussedBooks')");
+
+    }
   },
   getters: {
-    getMostDiscussedBooks: state => state.mostDiscussedBooks
+    getMostDiscussedBooks: state => state.mostDiscussedBooksDetails
   },
   modules: {
   }
