@@ -19,13 +19,14 @@ export default new Vuex.Store({
         bookId: "yXbkAF7w4twC"
       }
     ],
+    // if the fetched date aere added to the existing array, the change wouldn't be reactive and thus not displayed at initial page load, that's why a new array is created
     mostDiscussedBooksDetails: [],
     apiKey: "AIzaSyAiFCyH0fZG1Ox7mvFncKsaQ2ms61D8t5Y"
   },
   mutations: {
     setMostDiscussedBooks: state => {
       console.log("store - before mutation('setMostDiscussedBooks')");
-      state.mostDiscussedBooksDetails = [];
+      state.mostDiscussedBooksDetails = []; // it's important to clear it since we use push afterwards
       state.mostDiscussedBooks.forEach(book => {
         fetch(`https://www.googleapis.com/books/v1/volumes/${book.bookId}?key=${state.apiKey}`)
             .then(response => response.json())
