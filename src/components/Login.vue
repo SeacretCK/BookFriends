@@ -1,5 +1,6 @@
 <template>
   <div class="login-card">
+    <p class="login-error" v-if="errorMessage">*{{ errorMessage }}*</p>
 
     <!-- LOGIN FORM -->
     <!-- @submit.prevent is super important! because otherwise there would be a page refresh that interrupts the authentication process! -->
@@ -93,7 +94,8 @@ export default {
         email: "",
         password: ""
       },
-      showLoginForm: true
+      showLoginForm: true,
+      errorMessage: ""
     }
   },
   methods: {
@@ -129,10 +131,12 @@ export default {
             })
             .catch(err => {
               console.log(err);
+              this.errorMessage = err.message;
             });
         })
         .catch(err => {
           console.log(err);
+          this.errorMessage = err.message;
         });
     },
     login() {
@@ -148,6 +152,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
+          this.errorMessage = err.message;
         });
     }
   },
@@ -166,6 +171,10 @@ export default {
   @include set-background($color-light-grey);
   margin: 30px auto;
   border-radius: 5px;
+}
+
+.login-error {
+  color: $color-red;
 }
 
 .form {
