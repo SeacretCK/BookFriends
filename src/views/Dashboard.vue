@@ -8,7 +8,7 @@
       <hr>
       <div class="user__profile">
         <img :src="userInfo.image || defaultProfilePicture" alt="profile picture" class="profile-picture">
-        <div class="user__info" v-if="userInfo.favoriteBook && userInfo.aboutMe">
+        <div class="user__info" v-if="userInfo.favoriteBook || userInfo.aboutMe">
           <p v-if="userInfo.favoriteBook"><strong>likes:</strong> {{ userInfo.favoriteBook }}</p>
           <br>
           <p v-if="userInfo.aboutMe"><i> {{ userInfo.aboutMe }}</i></p>
