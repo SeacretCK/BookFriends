@@ -1,9 +1,11 @@
 <template>
-  <section class="section">
-    <h1>Mini-Forum</h1>
-    <p>Create posts, comment and like when logged in</p>
-    <p>See only previews if not logged in</p>
-  </section>
+  <div class="wrapper">
+    <section class="section">
+      <h1>Mini-Forum</h1>
+      <p>Create posts, comment and like when logged in</p>
+      <p>not ready yet :(</p>
+    </section>
+  </div>
 </template>
 
 <script>

@@ -1,47 +1,51 @@
 <template>
-  <header cass="header">
-    <nav class="navigation-wrapper">
-      <ul class="navigation">
-        <li class="navigation__item"><router-link class="navigation__link" to="/">Home</router-link></li>
-        <li class="navigation__item"><router-link class="navigation__link" to="dashboard">Dashboard</router-link></li>
-        <li class="navigation__item"><router-link class="navigation__link" to="profile">Profile</router-link></li>
-        <li class="navigation__item"><router-link class="navigation__link" to="forum">Forum</router-link></li>
-        <li class="navigation__item"><a class="navigation__link">Logout</a></li>
-      </ul>
-    </nav>
+  <header class="header">
+    <section class="section header-section">
+      <div>
+        <router-link class="header__logo" to="/">BookFriends</router-link>
+      </div>
+      <Navigation></Navigation>
+    </section>
   </header>
 </template>
 
+<script>
+
+import Navigation from "@/components/Navigation.vue"
+
+export default {
+  name: "Login",
+  components: {
+    Navigation
+    }
+}
+</script>
+
 <style lang="scss" scoped>
 
-.navigation-wrapper {
+.header {
   background-color: $color-dark-grey;
-  max-width: $max-width-section;
-  margin: 0 auto;
-  padding: 20px;
+  position: sticky;
+  top: 0;
+  left: 0;
 }
 
-.navigation {
-  list-style: none;
+.header-section {
   display: flex;
-  padding: 1em;
-  margin: 0; 
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
 }
 
-.navigation__item {
-  margin-left: 1em;
-}
-
-.navigation__link {
+.header__logo {
+  font-size: 3rem;
+  font-weight: 900;
   color: $color-light-blue;
   text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  cursor: pointer;
 
   &:hover {
-  color: lighten($color-light-blue, 5%);
+    color: $color-light-blue; // overrides the hover effect for links in typography.scss
   }
 }
+
 </style>

@@ -1,9 +1,13 @@
+.wrapper {
+  min-height: 100vh;
+  @include set-background($color-medium-grey);
+}
+
 .section {
   max-width: $max-width-section;
   margin: 0 auto;
   padding: 20px;
   text-align: center;
-  @include set-background($color-medium-grey);
 }
 
 .button {
@@ -12,13 +16,14 @@
 	outline: 0;
   color: $color-white;
   font-weight: 700;
-	padding: 0.8rem 1rem;
+	padding: 1rem;
 	min-width: 150px;
 	border-radius: 3px;
 	cursor: pointer;
 
-	&:hover {
-		background: lighten($color-medium-blue, 3%);
+  &:hover,
+  &:focus {
+		background: lighten($color-medium-blue, 10%);
   }
   
   &:disabled {
@@ -30,10 +35,20 @@
   min-width: 30px;
   min-height: 30px;
   background-color: $color-red;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  &:hover {
-		background: lighten($color-red, 3%);
+  &:hover,
+  &:focus {
+		background: lighten($color-red, 10%);
   }
+}
+
+// disabling window scroll when modal is open (applied to body)
+
+.modal-open {
+  overflow: hidden;
 }

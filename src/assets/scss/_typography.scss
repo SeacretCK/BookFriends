@@ -44,3 +44,14 @@ a {
     color: lighten($color-medium-blue, 8%)
   }
 }
+
+textarea,
+input[type=text] {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+button {
+  font-family: inherit;
+  font-size: 16px;
+}

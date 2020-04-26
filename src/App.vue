@@ -17,5 +17,5 @@ export default {
 </script>
 
 <style lang="scss">
-// this comment ensures that the scss applies for all components
+// this comment ensures that the scss applies to all components
 </style>
