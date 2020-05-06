@@ -157,10 +157,6 @@ export default {
     .button {
       margin: 5px 0;
     }
-
-    .button[disabled] {
-      pointer-events: none;
-    }
   }
 
   .modal__content-infos {

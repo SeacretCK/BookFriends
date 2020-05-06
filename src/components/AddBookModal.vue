@@ -7,11 +7,11 @@
         </div>
         
         <div class="modal__content">
-          <div class="modal__content-image">
+          <div class="modal__book-info">
+            <h2 class="modal__book-title">  {{ bookInfo.details.title }} </h2>
             <img :src="bookInfo.details.imageLinks.thumbnail">
           </div>  
-          <div class="modal__content-infos">
-            <h3 class="modal__book-title">  {{ bookInfo.details.title }} </h3>
+          <div class="modal__list-infos">  
             <p class="alert" v-if="addBookAlert"> {{ addBookAlert }} </p>
             <form class="form" @submit.prevent>
               <div class="form__input">
@@ -19,7 +19,7 @@
                   <v-select class="select-list" v-model="properties.selectedList" :options="booklists" label="listName" placeholder="Select your booklist"></v-select> <!-- https://vue-select.org/ -->
                   <p class="alert" v-if="newListNameAlert"> {{ newListNameAlert }} </p>
                   <form @submit.prevent class="new-booklist__form">
-                    <button class="button" @click="createNewList">Create new list</button>
+                    <button class="button button-secondary" @click="createNewList">Create new list</button>
                     <input
                       type="text"
                       placeholder="name of the list"
@@ -41,7 +41,7 @@
                   />
                 </div>
               </div>
-              <button type="button" class="button" @click="add">Add</button>
+              <button type="button" :disabled="!properties.selectedList" class="button" @click="add">Add</button>
             </form>
           </div>
         </div>
@@ -170,22 +170,43 @@ export default {
 
   .modal__content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
   }
 
-  .modal__content-image {
+  .modal__book-info {
     width: 30%;
-    padding: 10px;
-    text-align: left;
+    text-align: center;
+  }
+
+  .modal__book-title {
+    margin-bottom: 10px;
   }
 
   .select-list {
-    width: 200px;
+    width: 100%;
     background-color: $color-white;
+    margin-bottom: 10px;
   }
 
   .new-booklist__form {
     display: flex;
+    margin-bottom: 10px;
+  }
+
+  .input {
+    border-radius: 3px;
+    border: 1px solid $color-dark-grey;
+  }
+
+  .button-secondary {
+    background: $color-medium-grey;
+    font-weight: 500;
+    padding: 0.5rem;
+
+    &:hover,
+    &:focus {
+      background: lighten($color-medium-grey, 10%);
+    }
   }
 
   .comment {
@@ -197,7 +218,7 @@ export default {
     padding: 0.5rem;
     margin-bottom: 10px;
     background-color: $color-white;
-    border-radius: 5px;
+    border-radius: 3px;
     border: 1px solid $color-dark-grey;
   }
 
@@ -221,7 +242,7 @@ export default {
 
   .select-list .vs__dropdown-toggle,
   .select-list .vs__dropdown-menu {
-    border-radius: 5px;
+    border-radius: 3px;
     border: 1px solid $color-dark-grey;
     cursor: pointer;
   }

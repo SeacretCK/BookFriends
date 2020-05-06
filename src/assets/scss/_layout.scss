@@ -25,9 +25,10 @@
   &:focus {
 		background: lighten($color-medium-blue, 10%);
   }
-  
-  &:disabled {
+
+  &[disabled] {
     opacity: 0.5;
+    pointer-events: none;
   }
 }
 
