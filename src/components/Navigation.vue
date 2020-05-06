@@ -104,7 +104,7 @@ export default {
   width: 50px;
   object-fit: cover;
   border-radius: 25px;
-  border: 1px solid $color-white;
+  border: 1px solid $color-light-blue;
 }
 
 .button-menu {

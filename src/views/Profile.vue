@@ -253,7 +253,7 @@ export default {
 }
 
 .success {
-  background-color: green;
+  background-color: $color-green;
   font-size: 2rem;
   padding: 2rem;
   font-weight: 700;

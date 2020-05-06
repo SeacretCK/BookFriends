@@ -23,19 +23,13 @@ const getters = {
 };
 
 const actions = {
-  setMostDiscussedBooks: ({ commit }) => {
-    commit("setMostDiscussedBooks");
-  }
-};
-
-const mutations = {
-  setMostDiscussedBooks: state => {
-    state.mostDiscussedBooksDetails = []; // it's important to clear it since we use push afterwards
+  setMostDiscussedBooks: ({ state, commit }) => {
+    let fetchedBooks = [];
     state.mostDiscussedBooks.forEach(book => {
       fetch(`https://www.googleapis.com/books/v1/volumes/${book.bookId}?key=${state.apiKey}`)
           .then(response => response.json())
           .then(data => {
-            state.mostDiscussedBooksDetails.push(
+            fetchedBooks.push(
               {
                 number: book.number,
                 bookId: book.bookId,
@@ -45,6 +39,13 @@ const mutations = {
           })
           .catch(error => console.log(error))
     })
+    commit("setMostDiscussedBooks", fetchedBooks);
+  }
+};
+
+const mutations = {
+  setMostDiscussedBooks: (state, fetchedBooks) => {
+    state.mostDiscussedBooksDetails = fetchedBooks
   }
 };
 

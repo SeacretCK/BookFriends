@@ -8,40 +8,57 @@
         
         <div class="modal__content">
           <div class="modal__content-image">
-            <img :src="bookInfo[0].details.imageLinks.thumbnail">
+            <img :src="bookInfo.details.imageLinks.thumbnail">
             <div class="modal__buttons">
-              <button type="button" class="button">Add to Booklist</button>
-              <button type="button" class="button">Read Discussions</button>
+              <button type="button" class="button" @click="openAddBookModal()">Add to Booklist</button>
+              <button type="button" class="button" disabled>Read Discussions</button>
             </div>
           </div>  
           <div class="modal__content-infos">
-            <h3 class="modal__book-title">  {{ bookInfo[0].details.title }} </h3>
-            <p class="modal__book-author">by {{ bookInfo[0].details.authors.toString() }} </p>
-            <p class="modal__book-year">published: {{ bookInfo[0].details.publishedDate }} </p>
-            <p class="modal__book-summary" v-if="fullDescription" v-html="bookInfo[0].details.description"></p>
-            <p class="modal__book-summary" v-else v-html="this.$options.filters.trimLength(bookInfo[0].details.description)"></p>
+            <h3 class="modal__book-title">  {{ bookInfo.details.title }} </h3>
+            <p class="modal__book-author">by {{ bookInfo.details.authors.toString() }} </p>
+            <p class="modal__book-year">published: {{ bookInfo.details.publishedDate }} </p>
+            <p class="modal__book-summary" v-if="fullDescription" v-html="bookInfo.details.description"></p>
+            <p class="modal__book-summary" v-else v-html="this.$options.filters.trimLength(bookInfo.details.description)"></p>
             <a v-if="readMore" @click="showFullDescription">Read more</a>
           </div>
         </div>
       </div>
+
+      <section class="section section-addBookModal" v-if="showAddBookModal">
+        <AddBookModal v-on:close="close" :bookInfo="bookInfo"></AddBookModal>
+      </section>
+
     </div>
   </div>
 </template>
 
 <script>
+import AddBookModal from "@/components/AddBookModal.vue";
+
 export default {
   name: "BookInfoModal",
+  components: {
+    AddBookModal
+    },
   props: ["bookInfo"],
   data() {
     return {
       readMore: false,
-      fullDescription: false
+      fullDescription: false,
+      showAddBookModal: false
     }
   },
   methods: {
     showFullDescription() {
       this.fullDescription = true;
       this.readMore = false;
+    },
+    openAddBookModal() {
+      this.showAddBookModal = true;
+    },
+    close() {
+      this.showAddBookModal = false;
     }
   },
 
@@ -59,7 +76,7 @@ export default {
   //   }
   // },
   created() {
-      if (this.bookInfo[0].details.description.length > 1200) {
+      if (this.bookInfo.details.description.length > 1200) {
         this.readMore = true;
         this.fullDescription = false;
       } else {
@@ -139,6 +156,10 @@ export default {
 
     .button {
       margin: 5px 0;
+    }
+
+    .button[disabled] {
+      pointer-events: none;
     }
   }
 

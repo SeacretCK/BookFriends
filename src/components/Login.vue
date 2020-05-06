@@ -105,6 +105,7 @@ export default {
     ]),
     toggleForm() {
       this.showLoginForm = !this.showLoginForm;
+      this.errorMessage = "";
     },
     signup() {
       auth
@@ -122,7 +123,8 @@ export default {
             .doc(id)
             .set({
               name: this.signupForm.name,
-              email: this.signupForm.email
+              email: this.signupForm.email,
+              booklists: []
             })
             .then(() => {
               this.setUserProfile();

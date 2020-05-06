@@ -46,7 +46,9 @@ a {
 }
 
 textarea,
-input[type=text] {
+input[type=text],
+option,
+select {
   font-family: inherit;
   font-size: 14px;
 }

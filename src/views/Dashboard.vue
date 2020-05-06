@@ -6,24 +6,51 @@
       <p>Create your own BookLists with content from Google Books API</p>
       <p>Connect with friends? Send them book recommendations?</p>
       <hr>
-      <div class="user__profile">
-        <img :src="userInfo.image || defaultProfilePicture" alt="profile picture" class="profile-picture">
-        <div class="user__info" v-if="userInfo.favoriteBook || userInfo.aboutMe">
-          <p v-if="userInfo.favoriteBook"><strong>likes:</strong> {{ userInfo.favoriteBook }}</p>
-          <br>
-          <p v-if="userInfo.aboutMe"><i> {{ userInfo.aboutMe }}</i></p>
+      <div class="user__dashboard">
+
+        <div class="user__profile">
+          <img :src="userInfo.image || defaultProfilePicture" alt="profile picture" class="profile-picture">
+          <div class="profile-info" v-if="userInfo.favoriteBook || userInfo.aboutMe">
+            <p v-if="userInfo.favoriteBook"><strong>likes:</strong> {{ userInfo.favoriteBook }}</p>
+            <br>
+            <p v-if="userInfo.aboutMe"><i> {{ userInfo.aboutMe }}</i></p>
+          </div>
+        </div>
+
+        <div class="user__booklists">
+          <h2 class="booklist__heading">My booklists</h2>
+          <div v-for="list in booklists" :key="list.listId" @click="showBooklist(list.listId)">
+            <div class="booklist__item" tabindex="0">
+              <p> {{list.listName}} </p>
+            </div>
+          </div>
+          <p class="alert" v-if="newListNameAlert"> {{ newListNameAlert }} </p>
+          <form @submit.prevent class="new-booklist__form">
+            <button class="button" @click="createNewList">Create new list</button>
+            <input
+              type="text"
+              placeholder="name of the list"
+              class="input"
+              required
+              v-model.trim="newListName"
+            />
+          </form>
+        </div>
+        <div class="user__news">
+          <h2 class="news__heading">You have new Messages!</h2>
+          <p>...</p>
+          <p>...</p>
         </div>
       </div>
     </section>
-      
-    <section class="section section-news">
-      <h2 class="news__heading">You have new Messages!</h2>
-      <p>...</p>
-      <p>...</p>
+
+
+    <section class="section section-bookInfoModal" v-if="bookModal.showBookInfoModal">
+      <BookInfoModal v-on:close="close" :bookInfo="bookModal.clickedBookObject"></BookInfoModal>
     </section>
 
-    <section class="section section-bookInfoModal" v-if="showBookInfoModal">
-      <BookInfoModal v-on:close="close" :bookInfo="clickedBookObject"></BookInfoModal>
+    <section class="section section-booklistModal" v-if="listModal.showBooklistModal">
+      <BooklistModal v-on:close="close" :bookListId="listModal.clickedBooklistId"></BooklistModal>
     </section>
 
     <section class="section section-books">
@@ -44,45 +71,84 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import BookInfoModal from "@/components/BookInfoModal.vue";
+import BooklistModal from "@/components/BooklistModal.vue";
+
 
 export default {
   name: "Dashboard",
   components: {
-    BookInfoModal
+    BookInfoModal,
+    BooklistModal
   },
   data() {
     return {
-      showBookInfoModal: false,
-      clickedBookNumber: null,
-      clickedBookObject: null
+      bookModal: {
+        showBookInfoModal: false,
+        clickedBookNumber: null,
+        clickedBookObject: null
+      },
+      listModal: {
+        showBooklistModal: false,
+        clickedBooklistId: null,
+        // clickedBooklistObject: null
+      },
+      newListName: "",
+      newListNameAlert: ""
     }
   },
   created() {
     this.setMostDiscussedBooks();
+    this.setBooklists();
   },
   methods: {
     ...mapActions([
-      "setMostDiscussedBooks"
+      "setMostDiscussedBooks",
+      "createBooklist",
+      "setBooklists",
+      "setBooksInBooklist"
     ]),
     bookDetails(number) {
-      this.showBookInfoModal = true;
-      this.clickedBookNumber = number;
-      this.clickedBookObject = this.clickedBookInfo;
+      this.bookModal.showBookInfoModal = true;
+      this.bookModal.clickedBookNumber = number;
+      this.bookModal.clickedBookObject = this.clickedBookInfo[0];
+      document.body.classList.add('modal-open');
+    },
+    showBooklist(id) {
+      this.listModal.showBooklistModal = true;
+      this.listModal.clickedBooklistId = id;
+      // this.listModal.clickedBooklistObject = this.clickedBooklist[0];
+      this.setBooksInBooklist(this.listModal.clickedBooklistId)
       document.body.classList.add('modal-open');
     },
     close() {
-      this.showBookInfoModal = false;
-      this.clickedBookNumber = null;
-      this.clickedBookObject = null;
+      this.bookModal.showBookInfoModal = false;
+      this.bookModal.clickedBookNumber = null;
+      this.bookModal.clickedBookObject = null;
+      this.listModal.showBooklistModal = false;
+      this.listModal.clickedBooklist = null;
+      this.listModal.clickedBooklistObject = null;
       document.body.classList.remove('modal-open');
+    },
+    createNewList() {
+      this.newListNameAlert = "";
+      if (this.newListName) { // though input is required it would create a new list with empty name
+        if (this.checkIfListNameAlreadyExists) {
+          this.newListNameAlert = "You already have a list with that name!"
+        } else {
+          this.createBooklist(this.newListName);
+          this.newListName = "";
+        }
+      }
+ 
+      
     }
   },
   computed: {
     ...mapGetters([
-      //"getCurrentUser",
       "getUserProfile",
       "getMostDiscussedBooks",
-      "getDefaultProfilePicture"
+      "getDefaultProfilePicture",
+      "getBooklists"
     ]),
     userInfo() {
       return this.getUserProfile
@@ -90,15 +156,29 @@ export default {
     defaultProfilePicture() {
       return this.getDefaultProfilePicture
     },
+
+    // MOST DISCUSSED BOOKS
+
     mostDiscussedBooksSorted() {
-      return this.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original array (like sort would)
+      return this.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original Array (like sort would)
     },
     clickedBookInfo() {
-      return this.mostDiscussedBooksSorted.filter(item => item.number === this.clickedBookNumber)
+      return this.mostDiscussedBooksSorted.filter(item => item.number === this.bookModal.clickedBookNumber)
+      // returns an array with one object
     },
-    // currentUser() {
-    //   return this.getCurrentUser
-    // }
+
+    // BOOKLISTS
+
+    booklists() {
+      return this.getBooklists
+    },
+    // clickedBooklist() {
+    //   return this.booklists.filter(item => item.listId === this.listModal.clickedBooklistId)
+      // returns an array with one object
+    // },
+    checkIfListNameAlreadyExists() {
+      return this.getBooklists.some(item => item.listName === this.newListName)
+    }
   }
 }
 </script>
@@ -119,9 +199,21 @@ export default {
   color: $color-light-blue;
 }
 
+// USER SECTION
+
+.user__dashboard {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+  grid-template-areas: 
+    "main main main main main main main. sidebar sidebar sidebar sidebar"
+    "news news news news news news news. sidebar sidebar sidebar sidebar";
+}
+
 .user__profile {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  grid-area: main;
 }
 
 .profile-picture {
@@ -129,15 +221,65 @@ export default {
   width: 200px;
   object-fit: cover;
   border-radius: 100px;
-  border: 1px solid $color-white;
+  border: 2px solid $color-light-blue;
 }
 
-.user__info {
+.profile-info {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   margin-left: 20px;
+  padding-top: 1em;
 }
+
+// NEWS
+
+.user__news {
+  grid-area: news;
+  text-align: left;
+}
+
+.news__heading {
+  font-size: 1.7rem;
+  margin-bottom: 0.5em;
+}
+
+
+// BOOKLISTS
+
+.user__booklists {
+  grid-area: sidebar;
+  @include set-background($color-dark-blue);
+  border-radius: 10px;
+  overflow: hidden; // this lets the corners of the children be clipped to the border-radius
+  border: 1px solid $color-dark-grey;
+  align-self: flex-start;
+}
+
+.booklist__heading {
+  padding: 0.3em 0;
+  border-bottom: 1px solid $color-dark-grey;
+}
+
+.booklist__item {
+  padding: 0.8em;
+  cursor: pointer;
+  
+  &:hover,
+  &:focus {
+    background-color: lighten($color-dark-blue, 10%);
+    outline: none;
+  }
+
+  &:nth-child(n+1) {
+    border-bottom: 1px solid $color-dark-grey;
+  }
+}
+
+.new-booklist__form {
+  display: flex;
+}
+
+// OTHER SECTIONS
 
 .news__heading,
 .books__heading {
@@ -149,8 +291,6 @@ export default {
   display: flex;
   justify-content: space-between;
   cursor: pointer;
-  width: 80%;
-  margin: 0 auto;
 }
 
 .books__item {

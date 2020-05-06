@@ -6,7 +6,7 @@ const state = {
   currentUser: null,
   userProfile: {},
   booklist: [],
-  defaultProfilePicture: "https://firebasestorage.googleapis.com/v0/b/bookfriends-8ad5b.appspot.com/o/default-profile-pic.png?alt=media&token=a3ce294c-6633-46fb-bae2-a388f08a0e4d",
+  defaultProfilePicture: "https://firebasestorage.googleapis.com/v0/b/bookfriends-8ad5b.appspot.com/o/default-profile-pic.svg?alt=media&token=a4cce389-ab38-413c-94a2-ee88965c2a08",
   showSuccess: false
 };
 
