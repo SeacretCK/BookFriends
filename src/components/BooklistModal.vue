@@ -19,7 +19,7 @@
             
           </div>
           <div class="book__delete">
-            <button type="button" class="button button-close" @click.prevent="deleteBook(book.bookId)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
+            <button type="button" class="button button-close" @click="deleteBook(book.bookId)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
           </div>
         </div>
       </div>
@@ -52,6 +52,7 @@ export default {
     ]),
     deleteBook(id) {
       const listId = this.bookListId;
+      // to use arrayRemove you have to pass the exact object that should be removed (https://stackoverflow.com/questions/59694940/fieldvalue-arrayremove-to-remove-an-object-from-array-of-objects-based-on-prop)
       const bookObject = this.bookArray.filter(item => item.bookId === id)[0];
       const objectToDelete = {
         bookId: bookObject.bookId,
@@ -77,12 +78,6 @@ export default {
       });
     }
     
-  },
-  computed: {
-    
-    // bookArray() {
-    //   return this.getBooksInBooklist
-    // }
   }
 }
 </script>

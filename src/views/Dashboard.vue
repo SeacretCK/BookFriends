@@ -18,20 +18,23 @@
         </div>
 
         <div class="user__booklists">
-          <h2 class="booklist__heading">My booklists</h2>
-          <div v-for="list in booklists" :key="list.listId" @click="showBooklist(list.listId)">
+          <h2 class="booklist__heading">Your booklists</h2>
+          <div v-for="list in booklists" :key="list.listId">
             <div class="booklist__item" tabindex="0">
-              <p> {{list.listName}} </p>
+              <div class="booklist__name" @click="showBooklist(list.listId)">
+                <p> {{list.listName}} </p>
+              </div>
+              <button type="button" class="button button-close booklist__delete" @click="deleteList(list.listId)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
             </div>
           </div>
           <p class="alert" v-if="newListNameAlert"> {{ newListNameAlert }} </p>
           <form @submit.prevent class="new-booklist__form">
-            <button class="button" @click="createNewList">Create new list</button>
+            <button class="button button-create" @click="createNewList">Create new list</button>
             <input
               type="text"
+              ref="input"
               placeholder="name of the list"
               class="input"
-              required
               v-model.trim="newListName"
             />
           </form>
@@ -90,7 +93,6 @@ export default {
       listModal: {
         showBooklistModal: false,
         clickedBooklistId: null,
-        // clickedBooklistObject: null
       },
       newListName: "",
       newListNameAlert: ""
@@ -105,7 +107,8 @@ export default {
       "setMostDiscussedBooks",
       "createBooklist",
       "setBooklists",
-      "setBooksInBooklist"
+      "setBooksInBooklist",
+      "deleteBooklist"
     ]),
     bookDetails(number) {
       this.bookModal.showBookInfoModal = true;
@@ -116,7 +119,6 @@ export default {
     showBooklist(id) {
       this.listModal.showBooklistModal = true;
       this.listModal.clickedBooklistId = id;
-      // this.listModal.clickedBooklistObject = this.clickedBooklist[0];
       this.setBooksInBooklist(this.listModal.clickedBooklistId)
       document.body.classList.add('modal-open');
     },
@@ -131,7 +133,7 @@ export default {
     },
     createNewList() {
       this.newListNameAlert = "";
-      if (this.newListName) { // though input is required it would create a new list with empty name
+      if (this.newListName) { // making the input required didn't work properly and caused a browser alert after submit
         if (this.checkIfListNameAlreadyExists) {
           this.newListNameAlert = "You already have a list with that name!"
         } else {
@@ -139,8 +141,9 @@ export default {
           this.newListName = "";
         }
       }
- 
-      
+    },
+    deleteList(id) {
+      this.deleteBooklist(id);
     }
   },
   computed: {
@@ -172,10 +175,6 @@ export default {
     booklists() {
       return this.getBooklists
     },
-    // clickedBooklist() {
-    //   return this.booklists.filter(item => item.listId === this.listModal.clickedBooklistId)
-      // returns an array with one object
-    // },
     checkIfListNameAlreadyExists() {
       return this.getBooklists.some(item => item.listName === this.newListName)
     }
@@ -256,12 +255,16 @@ export default {
 }
 
 .booklist__heading {
+  font-size: 1.7rem;
   padding: 0.3em 0;
   border-bottom: 1px solid $color-dark-grey;
 }
 
 .booklist__item {
+  display: flex;
+  justify-content: space-between;
   padding: 0.8em;
+  border-bottom: 1px solid $color-dark-grey;
   cursor: pointer;
   
   &:hover,
@@ -269,10 +272,27 @@ export default {
     background-color: lighten($color-dark-blue, 10%);
     outline: none;
   }
+}
 
-  &:nth-child(n+1) {
-    border-bottom: 1px solid $color-dark-grey;
-  }
+.booklist__name {
+  width: 100%;
+  margin-right: 10px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.button-create {
+  border-radius: 0;
+  border: 1px solid $color-dark-grey;
+}
+
+.button__icon {
+  width: 20px;;
+}
+
+.input {
+  border: 1px solid $color-dark-grey;
 }
 
 .new-booklist__form {

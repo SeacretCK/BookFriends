@@ -31,6 +31,18 @@ const actions = {
         console.log(err);
       });
   },
+  deleteBooklist({ dispatch }, id) {
+    booklistsCollection
+      .doc(id)
+      .delete()
+      .then(() => {
+        console.log("booklist deleted");
+        dispatch("setBooklists");
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
   setBooklists({ commit, rootState }) {
     let booklistArray = [];
     booklistsCollection

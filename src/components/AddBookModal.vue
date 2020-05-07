@@ -24,7 +24,6 @@
                       type="text"
                       placeholder="name of the list"
                       class="input"
-                      required
                       v-model.trim="newListName"
                     />
                   </form>
@@ -86,18 +85,21 @@ export default {
     },
     createNewList() {
       this.newListNameAlert = "";
-      if (this.checkIfListNameAlreadyExists) {
-        this.newListNameAlert = "You already have a list with that name!"
-      } else {
-        this.createBooklist(this.newListName);
-        // it takes some time to create the list
-        // without timeout getNewListObject returns an empty array
-        setTimeout(() => {
-          console.log("timeout");
-          this.properties.selectedList = this.getNewListObject[0];
-          this.newListName = "";
-        }, 2000);
+      if (this.newListName) { // making the input required didn't work properly and caused a browser alert after submit
+        if (this.checkIfListNameAlreadyExists) {
+          this.newListNameAlert = "You already have a list with that name!"
+        } else {
+          this.createBooklist(this.newListName);
+          // it takes some time to create the list
+          // without timeout getNewListObject returns an empty array
+          setTimeout(() => {
+            console.log("timeout");
+            this.properties.selectedList = this.getNewListObject[0];
+            this.newListName = "";
+          }, 2000);
+        }
       }
+      
     }
   },
   computed: {
