@@ -15,7 +15,7 @@
           <label for="name" class="label profile-form__label-name">Name</label>
           <input
             type="text"
-            :placeholder="userInfo.name"
+            :placeholder="getUserProfile.name"
             id="name"
             required
             class="input profile-form__input-name"
@@ -24,7 +24,7 @@
           <label for="fav-book" class="label profile-form__label-fav-book">Favorite Book</label>
           <input
             type="text"
-            :placeholder="userInfo.favoriteBook || '>>What\'s your favorite book?<<'"
+            :placeholder="getUserProfile.favoriteBook || '>>What\'s your favorite book?<<'"
             id="fav-book"
             class="input profile-form__input-fav-book"
             v-model.trim="profileForm.favoriteBook"
@@ -33,7 +33,7 @@
           <textarea
             type="text"
             rows="3"
-            :placeholder="userInfo.aboutMe || '>>Tell others about yourself!<<'"
+            :placeholder="getUserProfile.aboutMe || '>>Tell others about yourself!<<'"
             id="about-me"
             class="input profile-form__input-about"
             v-model.trim="profileForm.aboutMe"
@@ -41,7 +41,7 @@
           <label for="signature" class="label profile-form__label-signature">Signature</label>
           <input
             type="text"
-            :placeholder="userInfo.signature || '>>Your signature<<'"
+            :placeholder="getUserProfile.signature || '>>Your signature<<'"
             id="signature"
             class="input profile-form__input-signature"
             v-model.trim="profileForm.signature"
@@ -74,30 +74,24 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "getCurrentUser",
       "getUserProfile",
+      "getCurrentUser",
       "getDefaultProfilePicture",
       "getShowSuccess"
     ]),
-    userInfo() {
-      return this.getUserProfile
-    },
-    userId() {
-      return this.getCurrentUser.uid
-    },
     profileForm() {
       return {
-        name: this.userInfo.name,
-        aboutMe: this.userInfo.aboutMe || "",
-        favoriteBook: this.userInfo.favoriteBook || "",
-        signature: this.userInfo.signature || "",
-        image: this.userInfo.image || ""
+        name: this.getUserProfile.name,
+        aboutMe: this.getUserProfile.aboutMe || "",
+        favoriteBook: this.getUserProfile.favoriteBook || "",
+        signature: this.getUserProfile.signature || "",
+        image: this.getUserProfile.image || ""
         // if these keys don't exist yet (because they are not created with the userProfile on signup) and are still empty when clicking update, they must be set to an empty string to upload valid data to firebase
       }
     },
     selectImage() {
-      if (this.userInfo.image) {
-        return this.userInfo.image
+      if (this.getUserProfile.image) {
+        return this.getUserProfile.image
       } else {
         return this.getDefaultProfilePicture
       }
@@ -114,7 +108,7 @@ export default {
     uploadImage(e) {
       const file = e.target.files[0];
       console.log(file)
-      const storageRef = storage.ref(`${this.userId}_profilePicture`)
+      const storageRef = storage.ref(`${this.getCurrentUser.uid}_profilePicture`)
       console.log(storageRef)
       const uploadTask = storageRef.put(file);
 
@@ -143,11 +137,11 @@ export default {
 
     },
     deleteImage() {
-      const desertRef = storage.ref(`${this.userId}_profilePicture`)
+      const desertRef = storage.ref(`${this.getCurrentUser.uid}_profilePicture`)
       desertRef.delete().then( () => {
         console.log("File successfully deleted")
         usersCollection
-          .doc(this.userId)
+          .doc(this.getCurrentUser.uid)
           .update({
             image: ""
           })
