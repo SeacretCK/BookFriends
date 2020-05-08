@@ -39,16 +39,14 @@ export default {
   ],
   data() {
     return {
-      bookArray: this.getBooksInBooklist()
+      bookArray: this.getBooksInBooklist 
+      // I can also directly use the getter in the v-for and in the deleteBook method!
     }
   },
   methods: {
     ...mapActions([
       "setBooklists",
       "setBooksInBooklist"
-    ]),
-    ...mapGetters([
-      "getBooksInBooklist"
     ]),
     deleteBook(id) {
       const listId = this.bookListId;
@@ -78,6 +76,16 @@ export default {
       });
     }
     
+  },
+  computed: {
+    ...mapGetters([
+      "getBooksInBooklist"
+    ]),
+  },
+  watch: {
+    getBooksInBooklist() {
+      this.bookArray = this.getBooksInBooklist;
+    }
   }
 }
 </script>
