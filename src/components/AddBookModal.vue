@@ -11,22 +11,28 @@
             <h2 class="modal__book-title">  {{ bookInfo.details.title }} </h2>
             <img :src="bookInfo.details.imageLinks.thumbnail">
           </div>  
-          <div class="modal__list-infos">  
-            <p class="alert" v-if="addBookAlert"> {{ addBookAlert }} </p>
+          <div class="modal__list-infos">
+            <h2>Select one of your lists</h2>  
+            <p class="alert" v-show="addBookAlert"> {{ addBookAlert }} </p>
             <form class="form" @submit.prevent>
               <div class="form__input">
                 <div class="choose-list">
-                  <v-select class="select-list" v-model="properties.selectedList" :options="booklists" label="listName" placeholder="Select your booklist"></v-select> <!-- https://vue-select.org/ -->
-                  <p class="alert" v-if="newListNameAlert"> {{ newListNameAlert }} </p>
+                  <v-select @input="clearAlerts" class="select-list" v-model="properties.selectedList" :options="booklists" label="listName" placeholder="Select your booklist"></v-select> <!-- https://vue-select.org/ -->
+                  <a @click="showCreateNewList = true">Or create a new list</a>
+                  <div v-if="showCreateNewList" class="new-booklist__container">
+                    <p class="alert" v-if="newListNameAlert"> {{ newListNameAlert }} </p>
                   <form @submit.prevent class="new-booklist__form">
-                    <button class="button button-secondary" @click="createNewList">Create new list</button>
                     <input
+                      @input="clearAlerts"
                       type="text"
-                      placeholder="name of the list"
+                      placeholder="Name of the list"
                       class="input"
                       v-model.trim="newListName"
                     />
+                    <button class="button button-secondary" @click="createNewList">Create new list</button>
                   </form>
+                  </div>
+                  
                 </div>
                 <div class="comment">
                   <label for="comment" class="label">Comment</label>
@@ -40,7 +46,7 @@
                   />
                 </div>
               </div>
-              <button type="button" :disabled="!properties.selectedList" class="button" @click="add">Add</button>
+              <button type="button" :disabled="!properties.selectedList" class="button" @click="add">Add book</button>
             </form>
           </div>
         </div>
@@ -65,7 +71,8 @@ export default {
       newListName: "",
       newListNameAlert: "",
       selectedListName: "",
-      addBookAlert: ""
+      addBookAlert: "",
+      showCreateNewList: false
     }
   },
   methods: {
@@ -96,10 +103,14 @@ export default {
             console.log("timeout");
             this.properties.selectedList = this.getNewListObject[0];
             this.newListName = "";
-          }, 2000);
+            this.showCreateNewList = false;
+          }, 1500);
         }
       }
-      
+    },
+    clearAlerts() {
+      this.addBookAlert = "";
+      this.newListNameAlert = "";
     }
   },
   computed: {
@@ -184,20 +195,30 @@ export default {
     margin-bottom: 10px;
   }
 
+  .modal__list-infos {
+    width: 60%;
+  }
+
   .select-list {
     width: 100%;
     background-color: $color-white;
     margin-bottom: 10px;
   }
 
+  .new-booklist__container {
+    margin-top: 10px;
+  }
+
   .new-booklist__form {
     display: flex;
+    justify-content: center;
     margin-bottom: 10px;
   }
 
   .input {
     border-radius: 3px;
     border: 1px solid $color-dark-grey;
+    padding-left: 5px;
   }
 
   .button-secondary {
