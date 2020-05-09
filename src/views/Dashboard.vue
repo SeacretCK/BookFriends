@@ -24,7 +24,7 @@
               <div class="booklist__name" @click="showBooklist(list.listId)">
                 <p> {{list.listName}} </p>
               </div>
-              <button type="button" class="button button-close booklist__delete" @click="deleteList(list.listId)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
+              <button type="button" class="button button-close booklist__delete" @click="deleteBooklist(list.listId)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
             </div>
           </div>
           <p class="alert" v-if="newListNameAlert"> {{ newListNameAlert }} </p>
@@ -33,7 +33,7 @@
             <input
               type="text"
               ref="input"
-              placeholder="name of the list"
+              placeholder="Name of the list"
               class="input"
               v-model.trim="newListName"
             />
@@ -141,9 +141,6 @@ export default {
           this.newListName = "";
         }
       }
-    },
-    deleteList(id) {
-      this.deleteBooklist(id);
     }
   },
   computed: {
@@ -263,6 +260,7 @@ export default {
 .booklist__item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 0.8em;
   border-bottom: 1px solid $color-dark-grey;
   cursor: pointer;
@@ -275,16 +273,23 @@ export default {
 }
 
 .booklist__name {
-  width: 100%;
+  width: 60%;
   margin-right: 10px;
   text-align: left;
   display: flex;
   align-items: center;
+  word-break: break-word;
+}
+
+.new-booklist__form {
+  display: flex;
+  width: 100%;
 }
 
 .button-create {
   border-radius: 0;
   border: 1px solid $color-dark-grey;
+  width: 50%;
 }
 
 .button__icon {
@@ -293,10 +298,8 @@ export default {
 
 .input {
   border: 1px solid $color-dark-grey;
-}
-
-.new-booklist__form {
-  display: flex;
+  width: 50%;
+  padding-left: 5px;
 }
 
 // OTHER SECTIONS
