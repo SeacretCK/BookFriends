@@ -29,11 +29,12 @@ const actions = {
       fetch(`https://www.googleapis.com/books/v1/volumes/${book.bookId}?key=${state.apiKey}`)
           .then(response => response.json())
           .then(data => {
+            console.log("data from most discussed books: ", data)
             fetchedBooks.push(
               {
                 number: book.number,
-                bookId: book.bookId,
-                details: data.volumeInfo
+                id: data.id,
+                volumeInfo: data.volumeInfo
               }
             );
           })

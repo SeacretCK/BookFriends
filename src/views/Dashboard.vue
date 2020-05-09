@@ -59,11 +59,11 @@
     <section class="section section-books">
       <h2 class="books__heading">Most discussed books this week</h2>
       <div class="books__container">
-        <div v-for="book in mostDiscussedBooksSorted" :key="book.bookId" class="books__item" @click="bookDetails(book.number)">
-          <h3 class="book__title">  {{ book.details.title }} </h3>
-          <p class="book__author"> {{ book.details.authors.toString() }} </p>
+        <div v-for="book in mostDiscussedBooksSorted" :key="book.id" class="books__item" @click="bookDetails(book.number)">
+          <h3 class="book__title">  {{ book.volumeInfo.title }} </h3>
+          <p class="book__author"> {{ book.volumeInfo.authors.toString() }} </p>
           <div class="book__image">
-            <img :src="book.details.imageLinks.thumbnail">
+            <img :src="book.volumeInfo.imageLinks.thumbnail">
           </div>
         </div>
       </div>
@@ -160,6 +160,7 @@ export default {
     // MOST DISCUSSED BOOKS
 
     mostDiscussedBooksSorted() {
+      console.log("mostDiscussedBooksSorted: ", this.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number))
       return this.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original Array (like sort would)
     },
     clickedBookInfo() {

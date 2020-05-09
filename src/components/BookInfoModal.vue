@@ -8,18 +8,20 @@
         
         <div class="modal__content">
           <div class="modal__content-image">
-            <img :src="bookInfo.details.imageLinks.thumbnail">
+            <img :src="bookInfo.volumeInfo.imageLinks.thumbnail">
             <div class="modal__buttons">
               <button type="button" class="button" @click="openAddBookModal()">Add to Booklist</button>
               <button type="button" class="button" disabled>Read Discussions</button>
             </div>
           </div>  
           <div class="modal__content-infos">
-            <h3 class="modal__book-title">  {{ bookInfo.details.title }} </h3>
-            <p class="modal__book-author">by {{ bookInfo.details.authors.toString() }} </p>
-            <p class="modal__book-year">published: {{ bookInfo.details.publishedDate }} </p>
-            <p class="modal__book-summary" v-if="fullDescription" v-html="bookInfo.details.description"></p>
-            <p class="modal__book-summary" v-else v-html="this.$options.filters.trimLength(bookInfo.details.description)"></p>
+            <h3 class="modal__book-title">  {{ bookInfo.volumeInfo.title }} </h3>
+            <p class="modal__book-author">by {{ bookInfo.volumeInfo.authors.toString() }} </p>
+            <p class="modal__book-year">published: {{ bookInfo.volumeInfo.publishedDate }} </p>
+            <div v-if="bookInfo.volumeInfo.description">
+              <p class="modal__book-summary" v-if="fullDescription" v-html="bookInfo.volumeInfo.description"></p>
+              <p class="modal__book-summary" v-else v-html="this.$options.filters.trimLength(bookInfo.volumeInfo.description)"></p>
+            </div>
             <a v-if="readMore" @click="showFullDescription">Read more</a>
           </div>
         </div>
@@ -76,12 +78,15 @@ export default {
   //   }
   // },
   created() {
-      if (this.bookInfo.details.description.length > 1200) {
-        this.readMore = true;
-        this.fullDescription = false;
-      } else {
-        this.readMore = false;
+      if(this.bookInfo.volumeInfo.description) {
+        if (this.bookInfo.volumeInfo.description.length > 1200) {
+          this.readMore = true;
+          this.fullDescription = false;
+        } else {
+          this.readMore = false;
+        }
       }
+      
   },
   filters: {
     trimLength(val) {

@@ -5,8 +5,12 @@
       <p class="welcome__text">Some text...</p>
     </section>
 
-    <section class="section section-login">
+    <section v-if="!getCurrentUser" class="section section-login">
       <Login/>
+    </section>
+
+    <section v-if="getCurrentUser" class="section section-search">
+      <Search/>
     </section>
   
   </div>
@@ -14,11 +18,19 @@
 
 <script>
 import Login from "@/components/Login.vue";
+import Search from "@/components/Search.vue";
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Home',
   components: {
-    Login
+    Login,
+    Search
+  },
+  computed: {
+    ...mapGetters([
+      "getCurrentUser"
+    ])
   }
   
 }

@@ -150,7 +150,7 @@ export default {
         .then(data => {
           this.setCurrentUser(data.user);
           this.setUserProfile();
-          this.$router.push("/dashboard");
+          //this.$router.push("/dashboard");
         })
         .catch(err => {
           console.log(err);
