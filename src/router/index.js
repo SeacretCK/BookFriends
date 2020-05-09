@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: "*",
-    redirect: "/dashboard"
+    redirect: "/"
   },
   {
     path: '/',
@@ -49,7 +49,6 @@ router.beforeEach((to, from, next) => {
   const currentUser = auth.currentUser;
   
   if (requiresAuth && !currentUser) {
-    alert("Please log in")
     next("/");
   } else {
     next();
