@@ -2,7 +2,7 @@
   <div class="wrapper">
     <section class="section section-welcome">
       <h1 class="welcome__heading">Welcome</h1>
-      <p class="welcome__text">Some text...</p>
+      <p v-if="getCurrentUser" class="welcome__text">Search the GoogleBooks API for interesting books</p>
     </section>
 
     <section v-if="!getCurrentUser" class="section section-login">

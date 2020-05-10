@@ -15,6 +15,7 @@
     <transition name="dropdown">
       <div class="navigation__dropdown" v-if="show">
         <ul class="navigation__dropdown-ul">
+          <li class="navigation__dropdown-item" @click="show = false"><router-link class="navigation__dropdown-link" to="home">Search</router-link></li>
           <li class="navigation__dropdown-item" @click="show = false"><router-link class="navigation__dropdown-link" to="dashboard">Dashboard</router-link></li>
           <li class="navigation__dropdown-item" @click="show = false"><router-link class="navigation__dropdown-link" to="profile">Profile</router-link></li>
           <li class="navigation__dropdown-item" @click="show = false"><router-link class="navigation__dropdown-link" to="forum">Forum</router-link></li>
