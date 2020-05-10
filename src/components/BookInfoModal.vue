@@ -17,8 +17,8 @@
           </div>  
           <div class="modal__content-infos">
             <h3 class="modal__book-title">  {{ bookInfo.volumeInfo.title }} </h3>
-            <p class="modal__book-author">by {{ bookInfo.volumeInfo.authors.toString() }} </p>
-            <p class="modal__book-year">published: {{ bookInfo.volumeInfo.publishedDate }} </p>
+            <p v-if="bookInfo.volumeInfo.authors" class="modal__book-author">by {{ bookInfo.volumeInfo.authors.toString() }} </p>
+            <p v-if="bookInfo.volumeInfo.publishedDate" class="modal__book-year">published: {{ bookInfo.volumeInfo.publishedDate }} </p>
             <div v-if="bookInfo.volumeInfo.description">
               <p class="modal__book-summary" v-if="fullDescription" v-html="bookInfo.volumeInfo.description"></p>
               <p class="modal__book-summary" v-else v-html="this.$options.filters.trimLength(bookInfo.volumeInfo.description)"></p>

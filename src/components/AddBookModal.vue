@@ -8,8 +8,9 @@
         
         <div class="modal__content">
           <div class="modal__book-info">
-            <h2 class="modal__book-title">  {{ bookInfo.details.title }} </h2>
-            <img :src="bookInfo.details.imageLinks.thumbnail">
+            <h2 class="modal__book-title">  {{ bookInfo.volumeInfo.title }} </h2>
+            <img v-if="bookInfo.volumeInfo.imageLinks" :src="bookInfo.volumeInfo.imageLinks.thumbnail || bookInfo.volumeInfo.imageLinks.smallThumbnail">
+            <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
           </div>  
           <div class="modal__list-infos">
             <h2>Select one of your lists</h2>  
@@ -64,7 +65,7 @@ export default {
   data() {
     return {
       properties: {
-        book: this.bookInfo,
+        book: [],
         selectedList: "",
         comment: ""
       },
@@ -75,13 +76,18 @@ export default {
       showCreateNewList: false
     }
   },
+  created() {
+    this.setBooklists();
+  },
   methods: {
     ...mapActions([
       "addBookToList",
-      "createBooklist"
+      "createBooklist",
+      "setBooklists"
     ]),
     add() {
       this.addBookAlert = "";
+      this.properties.book = this.bookInfo;
       if (this.checkIfBookIsAlreadyInTheList) {
         this.addBookAlert = "This book is already in the list!"
       } else {
@@ -189,6 +195,13 @@ export default {
   .modal__book-info {
     width: 30%;
     text-align: center;
+  }
+
+  .book__default-icon {
+    width: 90%;
+    height: auto;
+    object-fit: contain;
+    color: $color-medium-grey;
   }
 
   .modal__book-title {

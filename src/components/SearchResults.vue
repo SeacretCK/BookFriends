@@ -9,12 +9,20 @@
       </div>
       <div class="book__info">
         <h3 class="book__title">  {{ book.volumeInfo.title }} </h3>
-        <p class="book__author"> {{ book.volumeInfo.authors.toString() }} </p>
+        <p v-if="book.volumeInfo.authors" class="book__author"> {{ book.volumeInfo.authors.toString() }} </p>
+      </div>
+      <div class="book__addButton">
+        <button type="button" class="button" @click="openAddBookModal()">Add to Booklist</button>
       </div> 
+      
     </div>
 
     <section class="section section-bookInfoModal" v-if="bookModal.showBookInfoModal">
       <BookInfoModal v-on:close="close" :bookInfo="bookModal.clickedBookObject"></BookInfoModal>
+    </section>
+
+    <section class="section section-addBookModal" v-if="showAddBookModal">
+      <AddBookModal v-on:close="close" :bookInfo="bookModal.clickedBookObject"></AddBookModal>
     </section>
 
   </div>
@@ -23,12 +31,15 @@
 
 <script>
 import BookInfoModal from "@/components/BookInfoModal.vue";
+import AddBookModal from "@/components/AddBookModal.vue";
+
 import { mapGetters } from 'vuex'
 
 export default {
   name: "SearchResults",
   components: {
-    BookInfoModal
+    BookInfoModal,
+    AddBookModal
   },
   data() {
     return {
@@ -37,7 +48,8 @@ export default {
         clickedBookId: null, 
         clickedBookObject: null
       },
-      defaultBookImage: ""
+      defaultBookImage: "",
+      showAddBookModal: false
     }
   },
   methods: {
@@ -47,10 +59,14 @@ export default {
       this.bookModal.clickedBookObject = this.clickedBookInfo[0];
       document.body.classList.add('modal-open');
     },
+    openAddBookModal() {
+      this.showAddBookModal = true;
+    },
     close() {
       this.bookModal.showBookInfoModal = false;
       this.bookModal.clickedBookNumber = null;
       this.bookModal.clickedBookObject = null;
+      this.showAddBookModal = false;
       document.body.classList.remove('modal-open');
     },
   },
@@ -101,6 +117,22 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
+    padding-left: 1em;
+  }
+
+  .book__addButton {
+    width: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .button {
+      padding: 0.5rem;
+      min-width: 0;
+      width: 100%;
+      object-fit: contain
+    }
   }
 
 </style>

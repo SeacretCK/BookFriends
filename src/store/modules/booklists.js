@@ -71,7 +71,7 @@ const actions = {
     const listId = properties.selectedList.listId;
     const newBook = {
       number: 1, 
-      bookId: properties.book.bookId,
+      bookId: properties.book.id,
       comment: comment
     };
     booklistsCollection
