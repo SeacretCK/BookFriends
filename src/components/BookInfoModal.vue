@@ -8,7 +8,8 @@
         
         <div class="modal__content">
           <div class="modal__content-image">
-            <img :src="bookInfo.volumeInfo.imageLinks.thumbnail">
+            <img v-if="bookInfo.volumeInfo.imageLinks" :src="bookInfo.volumeInfo.imageLinks.thumbnail || bookInfo.volumeInfo.imageLinks.smallThumbnail">
+            <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
             <div class="modal__buttons">
               <button type="button" class="button" @click="openAddBookModal()">Add to Booklist</button>
               <button type="button" class="button" disabled>Read Discussions</button>
@@ -153,7 +154,14 @@ export default {
   .modal__content-image {
     width: 30%;
     padding: 10px;
-    text-align: left;
+    text-align: center;
+  }
+  
+  .book__default-icon {
+    width: 90%;
+    height: auto;
+    object-fit: contain;
+    color: $color-medium-grey;
   }
 
   .modal__buttons {
