@@ -121,6 +121,10 @@ export default {
     padding-left: 1em;
   }
 
+  .book__title {
+    text-align: left;
+  }
+
   .book__addButton {
     width: 15%;
     display: flex;
