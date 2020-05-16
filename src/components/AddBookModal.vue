@@ -216,7 +216,9 @@ export default {
     width: 100%;
     background-color: $color-white;
     margin-bottom: 10px;
-  }
+    border-radius: 3px;
+    border: 1px solid $color-dark-grey;
+    }
 
   .new-booklist__container {
     margin-top: 10px;
@@ -271,20 +273,3 @@ export default {
   }
 </style>
 
-<style lang="scss">
-
-  // adjusting the style of the v-select doesn't work in scoped
-  // https://github.com/sagalbot/vue-select/issues/490
-
-  .select-list .vs__dropdown-toggle,
-  .select-list .vs__dropdown-menu {
-    border-radius: 3px;
-    border: 1px solid $color-dark-grey;
-    cursor: pointer;
-  }
-
-  .select-list input {
-    cursor: pointer;
-  }
-
-</style>

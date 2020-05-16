@@ -49,11 +49,32 @@ textarea,
 input[type=text],
 option,
 select {
-  font-family: inherit;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: 14px;
+  font-weight: 300;
+} 
+
+// adjusting the style of the v-select doesn't work in scoped
+  // https://github.com/sagalbot/vue-select/issues/490
+
+.select-list .vs__dropdown-toggle,
+.select-list .vs__dropdown-menu,
+.select-list input {
+  cursor: pointer;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  border: 0;
+  padding-left: 2px;
+  padding-top: 1px;
+}
+
+.select-list .vs__selected {
+  padding-left: 0;
+  margin-left: 0;
 }
 
 button {
-  font-family: inherit;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: 16px;
 }
