@@ -201,7 +201,7 @@ export default {
   background-color: $color-white;
   margin-bottom: 10px;
   border-radius: 3px;
-  padding: 3px;
+  padding: 1.2px 3px;
 }
 
 
