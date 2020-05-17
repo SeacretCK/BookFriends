@@ -28,6 +28,10 @@ export default {
   position: sticky;
   top: 0;
   left: 0;
+  
+  // the v-select component in the advanced search was showing up above the header when scrolling
+  // z-index: -1 made it disappear
+  z-index: 10;
 }
 
 .header-section {
