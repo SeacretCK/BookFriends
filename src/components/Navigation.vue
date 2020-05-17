@@ -1,7 +1,7 @@
 <template>
   <nav class="navigation" v-show="currentUser">
     <div class="navigation__user-picture">
-      <img :src="selectImage" alt="profile picture" class="profile-picture">
+      <router-link to="dashboard"><img :src="selectImage" alt="profile picture" class="profile-picture"></router-link>
     </div>
     <div class="navigation__name">
       <transition name="slide-fade">
