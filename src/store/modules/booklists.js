@@ -69,8 +69,10 @@ const actions = {
     console.log("properties of added book: ", properties)
     const comment = properties.comment;
     const listId = properties.selectedList.listId;
+    const booklist = state.booklists.find(item => item.listId === listId);
+    const number = booklist.books.length + 1;
     const newBook = {
-      number: 1, 
+      number: number, 
       bookId: properties.book.id,
       comment: comment
     };
