@@ -5,7 +5,7 @@
         <div class="modal__header">
           <button type="button" class="button button-close" @click="$emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
-        
+        <h2 class="modal__listName"> {{ listName }}</h2>
         <div class="modal__content" v-for="book in bookArray" :key="book.bookId">
           
           <div class="modal__content-imageBox">
@@ -79,8 +79,12 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "getBooksInBooklist"
+      "getBooksInBooklist",
+      "getBooklists"
     ]),
+    listName() {
+      return this.getBooklists.find(item => item.listId === this.bookListId).listName;
+    }
   },
   watch: {
     getBooksInBooklist() {
@@ -134,6 +138,11 @@ export default {
   .modal__header {
     display: flex;
     justify-content: flex-end;
+  }
+
+  .modal__listName {
+    padding: 0.5em;
+    font-size: 2rem;
   }
 
   .modal__content {
