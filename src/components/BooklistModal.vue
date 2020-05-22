@@ -6,7 +6,7 @@
           <button type="button" class="button button-close" @click="$emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
         <h2 class="modal__listName"> {{ listName }}</h2>
-        <div class="modal__content" v-for="book in bookArray" :key="book.bookId">
+        <div class="modal__content" v-for="book in bookArraySorted" :key="book.bookId">
           
           <div class="modal__content-imageBox">
             <img class="book__image" :src="book.details.imageLinks.thumbnail">
@@ -46,7 +46,8 @@ export default {
   methods: {
     ...mapActions([
       "setBooklists",
-      "setBooksInBooklist"
+      "setBooksInBooklist",
+      "updateBookNumbers"
     ]),
     deleteBook(id) {
       const listId = this.bookListId;
@@ -64,16 +65,27 @@ export default {
       })
       .then(() => {
         console.log("successfully deleted")
-        this.setBooklists();
-        setTimeout(() => {
-          console.log("timeout");
-          this.setBooksInBooklist(this.bookListId);
-        }, 2000);
-        
       })
       .catch(err => {
         console.log(err);
       });
+
+      const deletedBook = {
+        number: bookObject.number,
+        listId: listId
+      }
+      setTimeout(() => {
+        console.log("timeout");
+        this.setBooklists();
+      }, 2000);
+      setTimeout(() => {
+        console.log("timeout");
+        this.updateBookNumbers(deletedBook);
+      }, 3000);
+      setTimeout(() => {
+        console.log("timeout");
+        this.setBooksInBooklist(this.bookListId);
+      }, 4000);
     }
     
   },
@@ -84,6 +96,9 @@ export default {
     ]),
     listName() {
       return this.getBooklists.find(item => item.listId === this.bookListId).listName;
+    },
+    bookArraySorted() {
+      return this.getBooksInBooklist.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original Array (like sort would)
     }
   },
   watch: {

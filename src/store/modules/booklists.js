@@ -88,6 +88,34 @@ const actions = {
         console.log(err);
       });
   },
+  updateBookNumbers({ dispatch }, deletedBook) {
+    const deletedNumber = deletedBook.number;
+    const booklist = state.booklists.filter(item => item.listId === deletedBook.listId);
+    const booksArray = booklist[0].books;
+    let updatedBooklist = [];
+    booksArray.forEach(book => {
+      if(book.number > deletedNumber) {
+        book.number --;
+      }
+      updatedBooklist.push(book);
+    })
+    console.log("updated list", updatedBooklist);
+    booklistsCollection
+      .doc(deletedBook.listId)
+      .update({
+        books: updatedBooklist
+      })
+      .then(() => {
+        dispatch("setBooklists");
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+
+    dispatch("setBooklists");
+  },
+
   setBooksInBooklist({ state, commit }, listId) {
     console.log("setBooksInBooklist listId: ", listId)
     const booklist = state.booklists.filter(item => item.listId === listId);
