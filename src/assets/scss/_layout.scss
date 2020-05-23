@@ -48,6 +48,15 @@
   }
 }
 
+.button-check {
+  background-color: $color-green;
+
+  &:hover,
+  &:focus {
+		background: lighten($color-green, 10%);
+  }
+}
+
 // disabling window scroll when modal is open (applied to body)
 
 .modal-open {

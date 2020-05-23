@@ -112,8 +112,36 @@ const actions = {
         console.log(err);
       });
 
+    dispatch("setBooklists");
+  },
+  updateBookComment({ dispatch }, updatedBook) {
+    const booklist = state.booklists.filter(item => item.listId === updatedBook.listId);
+    const booksArray = booklist[0].books;
+    let updatedBooklist = [];
+    booksArray.forEach(book => {
+      if(book.bookId === updatedBook.bookId) {
+        book.comment = updatedBook.comment;
+      }
+      updatedBooklist.push(book);
+    })
+    console.log("updated list", updatedBooklist);
+    booklistsCollection
+      .doc(updatedBook.listId)
+      .update({
+        books: updatedBooklist
+      })
+      .then(() => {
+        dispatch("setBooklists");
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
     dispatch("setBooklists");
+    setTimeout(() => {
+      console.log("timeout");
+      dispatch("setBooksInBooklist", updatedBook.listId);
+    }, 1500);
   },
 
   setBooksInBooklist({ state, commit }, listId) {

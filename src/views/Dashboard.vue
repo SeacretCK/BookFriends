@@ -53,7 +53,7 @@
     </section>
 
     <section class="section section-booklistModal" v-if="listModal.showBooklistModal">
-      <BooklistModal v-on:close="close" :bookListId="listModal.clickedBooklistId"></BooklistModal>
+      <BooklistModal v-on:close="close" :booklistId="listModal.clickedBooklistId"></BooklistModal>
     </section>
 
     <section class="section section-books">

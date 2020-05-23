@@ -8,19 +8,8 @@
         <h2 class="modal__listName"> {{ listName }}</h2>
         <div class="modal__content" v-for="book in bookArraySorted" :key="book.bookId">
           
-          <div class="modal__content-imageBox">
-            <img class="book__image" :src="book.details.imageLinks.thumbnail">
-          </div>  
-          <div class="modal__content-infos">
-            <h2 class="book__number">Nr. {{ book.number }}</h2>
-            <h3 class="book__title"> {{ book.details.title }} </h3>
-            <p class="book__author">by {{ book.details.authors[0] }} </p>
-            <p class="book__comment" v-show="book.comment">"{{ book.comment }}"</p>
-            
-          </div>
-          <div class="book__delete">
-            <button type="button" class="button button-close" @click="deleteBook(book.bookId)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
-          </div>
+          <BooklistItem :book="book" :booklistId="booklistId" :bookArray="bookArray"></BooklistItem>
+
         </div>
       </div>
     </div>
@@ -28,66 +17,24 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { booklistsCollection } from "@/firebaseConfig"
-import firebase from "firebase";
+import { mapGetters } from 'vuex'
+import BooklistItem from "./BooklistItem.vue"
 
 export default {
   name: "BooklistModal",
+  components: {
+    BooklistItem
+  },
   props: [
-    "bookListId"
+    "booklistId"
   ],
   data() {
     return {
-      bookArray: this.getBooksInBooklist 
+      bookArray: this.getBooksInBooklist
       // I can also directly use the getter in the v-for and in the deleteBook method!
     }
   },
   methods: {
-    ...mapActions([
-      "setBooklists",
-      "setBooksInBooklist",
-      "updateBookNumbers"
-    ]),
-    deleteBook(id) {
-      const listId = this.bookListId;
-      // to use arrayRemove you have to pass the exact object that should be removed (https://stackoverflow.com/questions/59694940/fieldvalue-arrayremove-to-remove-an-object-from-array-of-objects-based-on-prop)
-      const bookObject = this.bookArray.filter(item => item.bookId === id)[0];
-      const objectToDelete = {
-        bookId: bookObject.bookId,
-        comment: bookObject.comment,
-        number: bookObject.number
-      }
-      booklistsCollection
-      .doc(listId)
-      .update({
-        books: firebase.firestore.FieldValue.arrayRemove(objectToDelete)
-      })
-      .then(() => {
-        console.log("successfully deleted")
-      })
-      .catch(err => {
-        console.log(err);
-      });
-
-      const deletedBook = {
-        number: bookObject.number,
-        listId: listId
-      }
-      setTimeout(() => {
-        console.log("timeout");
-        this.setBooklists();
-      }, 2000);
-      setTimeout(() => {
-        console.log("timeout");
-        this.updateBookNumbers(deletedBook);
-      }, 3000);
-      setTimeout(() => {
-        console.log("timeout");
-        this.setBooksInBooklist(this.bookListId);
-      }, 4000);
-    }
-    
   },
   computed: {
     ...mapGetters([
@@ -95,7 +42,7 @@ export default {
       "getBooklists"
     ]),
     listName() {
-      return this.getBooklists.find(item => item.listId === this.bookListId).listName;
+      return this.getBooklists.find(item => item.listId === this.booklistId).listName;
     },
     bookArraySorted() {
       return this.getBooksInBooklist.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original Array (like sort would)
@@ -158,45 +105,5 @@ export default {
   .modal__listName {
     padding: 0.5em;
     font-size: 2rem;
-  }
-
-  .modal__content {
-    display: flex;
-    justify-content: space-around;
-  }
-
-  .modal__content-imageBox {
-    padding: 10px;
-    text-align: left;
-  }
-
-  .book__image {
-    height: 150px;
-  }
-
-  .modal__content-infos {
-    width: 60%;
-    padding: 10px;
-    text-align: left;
-  }
-
-  .book__author {
-    padding: 0.5em 0;
-  }
-
-  .book__comment {
-    font-style: italic;
-    padding-top: 1em;
-  }
-
-  .book__delete {
-    width: 10%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .button {
-      padding: 0.5em 1em;
-    }
   }
 </style>
