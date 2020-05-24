@@ -99,7 +99,7 @@ const actions = {
       }
       updatedBooklist.push(book);
     })
-    console.log("updated list", updatedBooklist);
+    console.log("updated numbers", updatedBooklist);
     booklistsCollection
       .doc(deletedBook.listId)
       .update({
@@ -111,8 +111,6 @@ const actions = {
       .catch(err => {
         console.log(err);
       });
-
-    dispatch("setBooklists");
   },
   updateBookComment({ dispatch }, updatedBook) {
     const booklist = state.booklists.filter(item => item.listId === updatedBook.listId);
