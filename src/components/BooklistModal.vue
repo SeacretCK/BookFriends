@@ -1,40 +1,103 @@
 <template>
   <div class="modal__wrapper">
-    <div class="modal__wrapper-inner" @click.self="$emit('close')">
+    <div class="modal__wrapper-inner" @click.self="setNewSorting(update), $emit('close')">
       <div class="modal__container">
         <div class="modal__header">
-          <button type="button" class="button button-close" @click="$emit('close')"><font-awesome-icon icon="times"/></button>
+          <button type="button" class="button button-close" @click="setNewSorting(update), $emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
         <h2 class="modal__listName"> {{ listName }}</h2>
-        <div class="modal__content" v-for="book in bookArraySorted" :key="book.bookId">
-          
-          <BooklistItem :book="book" :booklistId="booklistId" :bookArray="bookArray"></BooklistItem>
+        
+        <draggable 
+          @end="updateNumbers"
+          :disabled=draggable.disabled
+          direction="vertical"
+          class="draggable"
+          handle=".draggable-handle">
 
-        </div>
+          <div class="modal__content" v-for="book in bookArraySorted" :key="book.bookId" :id="book.bookId">
+
+            <BooklistItem :book="book" :booklistId="booklistId" :bookArray="bookArraySorted" 
+              v-on:disableDraggable="draggable.disabled = true"
+              v-on:enableDraggable="draggable.disabled = false">
+            </BooklistItem>
+
+          </div>
+
+        </draggable>
+
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import BooklistItem from "./BooklistItem.vue"
+import draggable from 'vuedraggable'
 
 export default {
   name: "BooklistModal",
   components: {
-    BooklistItem
+    BooklistItem,
+    draggable
   },
   props: [
     "booklistId"
   ],
   data() {
     return {
-      bookArray: this.getBooksInBooklist
+      //bookArray: this.getBooksInBooklist,
       // I can also directly use the getter in the v-for and in the deleteBook method!
+      draggable: {
+        disabled: false
+      },
+      update: {
+        newSortedList: [],
+        listId: this.booklistId
+      }
+      
     }
   },
   methods: {
+    ...mapActions([
+      "setNewSorting"
+    ]),
+    updateNumbers(e) {
+      console.log(e)
+      console.log("New index: " + e.newIndex)
+      console.log("Old index: " + e.oldIndex)
+      const listArray = this.getBooksInBooklist;
+      let updatedList = [];
+      // maybe it is not even required to make a new array, because the following number updates seem to apply directly to bookArraySorted (that's why it's updating immediately in the list)
+
+      if (e.oldIndex > e.newIndex) {
+        listArray.forEach(book => {
+          if (book.number > e.newIndex) {
+            if (book.number === e.oldIndex + 1) {
+              book.number = e.newIndex + 1;
+            } else {
+              book.number ++;
+            } 
+          } 
+          updatedList.push(book);
+        })
+      } else {
+        listArray.forEach(book => {
+          if (book.number < e.newIndex + 2 && book.number > e.oldIndex) {
+            if (book.number === e.oldIndex + 1) {
+              book.number = e.newIndex + 1;
+            } else {
+              book.number --;
+            }
+          }
+          updatedList.push(book);
+        })
+      }
+      console.log("listArray", listArray);
+      console.log("updatedList", updatedList);
+      console.log("bookArraySorted", this.bookArraySorted)
+      this.update.newSortedList = updatedList;
+    }
   },
   computed: {
     ...mapGetters([
@@ -47,12 +110,8 @@ export default {
     bookArraySorted() {
       return this.getBooksInBooklist.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original Array (like sort would)
     }
-  },
-  watch: {
-    getBooksInBooklist() {
-      this.bookArray = this.getBooksInBooklist;
-    }
   }
+  
 }
 </script>
 
@@ -106,4 +165,5 @@ export default {
     padding: 0.5em;
     font-size: 2rem;
   }
+
 </style>

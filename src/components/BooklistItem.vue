@@ -1,21 +1,21 @@
 <template>
   <div class="card__container"> 
 
-    <div class="card__imageBox">
+    <div class="card__imageBox draggable-handle">
       <img class="book__image" :src="book.details.imageLinks.thumbnail">
     </div>  
 
     <div class="card__infos">
-      <h2 class="book__number">Nr. {{ book.number }}</h2>
-      <h3 class="book__title"> {{ book.details.title }} </h3>
-      <p class="book__author" v-if="book.details.authors">by {{ book.details.authors[0] }} </p>
-      <p class="book__author-default" v-if="!book.details.authors"> Author unknown </p>
+      <h2 class="book__number draggable-handle">Nr. {{ book.number }}</h2>
+      <h3 class="book__title draggable-handle"> {{ book.details.title }} </h3>
+      <p class="book__author draggable-handle" v-if="book.details.authors">by {{ book.details.authors[0] }} </p>
+      <p class="book__author-default draggable-handle" v-if="!book.details.authors"> Author unknown </p>
       <p class="book__comment" @click="editComment" v-if="!editableComment && book.comment">{{ book.comment }} <font-awesome-icon icon='pen' class="pen-icon"/></p>
       <p class="book__comment-default" @click="editComment" v-if="!editableComment && !book.comment">add a comment? <font-awesome-icon icon='pen' class="pen-icon"/></p>
       <form @submit.prevent="saveEditedComment" v-if="editableComment" class="comment__edit-form">
         <textarea rows="1" ref="edit" class="comment__edit-textarea" v-model="comment"></textarea>
         <button type="button" class="button button-close button-check" @click="saveEditedComment"><font-awesome-icon icon='check' class="button__icon"/></button>
-        <button type="button" class="button button-close" @click="editableComment = false"><font-awesome-icon icon='times' class="button__icon"/></button>
+        <button type="button" class="button button-close" @click="editableComment = false, $emit('enableDraggable')"><font-awesome-icon icon='times' class="button__icon"/></button>
       </form>
     </div>
 
@@ -59,12 +59,14 @@ export default {
 
     editComment() {
       this.editableComment = true;
+      this.$emit("disableDraggable");
     },
     saveEditedComment() {
       console.log("save ", this.comment)
       this.updatedBook.comment = this.comment;
       this.updateBookComment(this.updatedBook)
       this.editableComment = false;
+      this.$emit("enableDraggable");
     }
   },
   computed: {
@@ -147,6 +149,10 @@ export default {
     .button {
       padding: 0.5em 1em;
     }
+  }
+
+  .draggable-handle {
+    cursor: move;
   }
 
 </style>

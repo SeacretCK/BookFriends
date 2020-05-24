@@ -112,6 +112,22 @@ const actions = {
         console.log(err);
       });
   },
+
+  setNewSorting({ dispatch }, update) {
+    console.log(update)
+    booklistsCollection
+      .doc(update.listId)
+      .update({
+        books: update.newSortedList
+      })
+      .then(() => {
+        dispatch("setBooklists");
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
+
   updateBookComment({ dispatch }, updatedBook) {
     const booklist = state.booklists.filter(item => item.listId === updatedBook.listId);
     const booksArray = booklist[0].books;
