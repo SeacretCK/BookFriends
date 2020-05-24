@@ -8,7 +8,8 @@
     <div class="card__infos">
       <h2 class="book__number">Nr. {{ book.number }}</h2>
       <h3 class="book__title"> {{ book.details.title }} </h3>
-      <p class="book__author">by {{ book.details.authors[0] }} </p>
+      <p class="book__author" v-if="book.details.authors">by {{ book.details.authors[0] }} </p>
+      <p class="book__author-default" v-if="!book.details.authors"> Author unknown </p>
       <p class="book__comment" @click="editComment" v-if="!editableComment && book.comment">{{ book.comment }} <font-awesome-icon icon='pen' class="pen-icon"/></p>
       <p class="book__comment-default" @click="editComment" v-if="!editableComment && !book.comment">add a comment? <font-awesome-icon icon='pen' class="pen-icon"/></p>
       <form @submit.prevent="saveEditedComment" v-if="editableComment" class="comment__edit-form">
@@ -19,7 +20,7 @@
     </div>
 
     <div class="book__delete">
-      <button type="button" class="button button-close" @click="deleteBook(book.bookId)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
+      <button type="button" class="button button-close" @click="deleteBook(updatedBook)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
     </div>
 
   </div>
@@ -27,8 +28,6 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { booklistsCollection } from "@/firebaseConfig"
-import firebase from "firebase";
 
 export default {
   name: "BooklistItem",
@@ -42,8 +41,9 @@ export default {
       editableComment: false,
       updatedBook: {
         bookId: this.book.bookId,
-        comment: "",
-        listId: this.booklistId
+        comment: this.book.comment,
+        listId: this.booklistId,
+        number: this.book.number
       },
       comment: this.book.comment
     }
@@ -53,46 +53,9 @@ export default {
       "setBooklists",
       "setBooksInBooklist",
       "updateBookNumbers",
-      "updateBookComment"
+      "updateBookComment",
+      "deleteBook"
     ]),
-    deleteBook(id) {
-      const listId = this.booklistId;
-      // to use arrayRemove you have to pass the exact object that should be removed (https://stackoverflow.com/questions/59694940/fieldvalue-arrayremove-to-remove-an-object-from-array-of-objects-based-on-prop)
-      const bookObject = this.bookArray.filter(item => item.bookId === id)[0];
-      const objectToDelete = {
-        bookId: bookObject.bookId,
-        comment: bookObject.comment,
-        number: bookObject.number
-      }
-      booklistsCollection
-      .doc(listId)
-      .update({
-        books: firebase.firestore.FieldValue.arrayRemove(objectToDelete)
-      })
-      .then(() => {
-        console.log("successfully deleted")
-      })
-      .catch(err => {
-        console.log(err);
-      });
-
-      const deletedBook = {
-        number: bookObject.number,
-        listId: listId
-      }
-      setTimeout(() => {
-        console.log("timeout");
-        this.setBooklists();
-      }, 2000);
-      setTimeout(() => {
-        console.log("timeout");
-        this.updateBookNumbers(deletedBook);
-      }, 3000);
-      setTimeout(() => {
-        console.log("timeout");
-        this.setBooksInBooklist(this.booklistId);
-      }, 4000);
-    },
 
     editComment() {
       this.editableComment = true;
@@ -133,6 +96,11 @@ export default {
 
   .book__author {
     padding: 0.5em 0;
+  }
+
+  .book__author-default {
+    padding: 0.5em 0;
+    color: lighten($color-medium-grey, 30%);
   }
 
   .book__comment {

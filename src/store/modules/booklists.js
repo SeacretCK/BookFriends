@@ -142,6 +142,44 @@ const actions = {
     }, 1500);
   },
 
+  deleteBook({ dispatch }, deletedBook) {
+    console.log("deleted book", deletedBook);
+    // to use arrayRemove you have to pass the exact object that should be removed (https://stackoverflow.com/questions/59694940/fieldvalue-arrayremove-to-remove-an-object-from-array-of-objects-based-on-prop)
+    
+    const booklist = state.booklists.filter(item => item.listId === deletedBook.listId);
+    const booksArray = booklist[0].books;
+    const bookObject = booksArray.filter(item => item.bookId === deletedBook.bookId)[0];
+    const objectToDelete = {
+      bookId: bookObject.bookId,
+      comment: bookObject.comment,
+      number: bookObject.number
+    }
+    booklistsCollection
+    .doc(deletedBook.listId)
+    .update({
+      books: firebase.firestore.FieldValue.arrayRemove(objectToDelete)
+    })
+    .then(() => {
+      console.log("successfully deleted");
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+    setTimeout(() => {
+      console.log("timeout");
+      dispatch("setBooklists");
+    }, 2000);
+    setTimeout(() => {
+      console.log("timeout");
+      dispatch("updateBookNumbers", deletedBook);
+    }, 3000);
+    setTimeout(() => {
+      console.log("timeout");
+      dispatch("setBooksInBooklist", deletedBook.listId);
+    }, 4000);
+  },
+
   setBooksInBooklist({ state, commit }, listId) {
     console.log("setBooksInBooklist listId: ", listId)
     const booklist = state.booklists.filter(item => item.listId === listId);
@@ -165,7 +203,8 @@ const actions = {
     });
     console.log("fetched books to be set: ", fetchedBooks);
     commit("setBooksInBooklist", fetchedBooks);
-  }
+  },
+  
 };
 
 const mutations = {
