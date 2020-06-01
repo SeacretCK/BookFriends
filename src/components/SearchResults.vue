@@ -28,7 +28,7 @@
     </section>
 
     <div>
-      <button type="button" class="button" @click="showMoreResults()">Show more Results</button>
+      <button type="button" class="button" @click="showMoreResults">Show more Results</button>
     </div>   
 
   </div>

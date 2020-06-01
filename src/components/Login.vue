@@ -4,7 +4,8 @@
 
     <!-- LOGIN FORM -->
     <!-- @submit.prevent is super important! because otherwise there would be a page refresh that interrupts the authentication process! -->
-    <form v-if="showLoginForm" class="form login-form" @submit.prevent>
+    <form v-if="showLoginForm && !forgotPassword" class="form login-form" @submit.prevent>
+      <h2 class="form__heading">Login with your Account</h2>
 
       <label for="email" class="label login-form__label-email">Email</label>
       <input
@@ -29,13 +30,14 @@
       <button class="button" @click="login">Log In</button>
 
       <div class="links login-form__links">
-        <a>Forgot Password</a>
+        <a @click="forgotPassword = true">Forgot Password</a>
         <a @click="toggleForm">Create an Account</a>
       </div>
     </form>
 
     <!-- SIGN UP FORM -->
-    <form v-if="!showLoginForm" class="form signup-form" @submit.prevent>
+    <form v-if="!showLoginForm && !forgotPassword" class="form signup-form" @submit.prevent>
+      <h2 class="form__heading">Create an Account</h2>
 
       <label for="name" class="label signup-form__label-name">Name</label>
       <input
@@ -70,10 +72,32 @@
       <button class="button" @click="signup">Sign Up</button>
 
       <div class="links signup-form__links">
-        <a>Forgot Password</a>
+        <a @click="forgotPassword = true">Forgot Password</a>
         <a @click="toggleForm">Back to Login</a>
       </div>
     </form>
+
+    <form v-if="forgotPassword" class="form" @submit.prevent>
+      <h2 class="form__heading">Reset Password</h2>
+      <p class="password-form__text">We will send you an email to reset your password</p>
+
+      <label for="email" class="label">Email</label>
+      <input
+        type="text"
+        placeholder="email@email.com"
+        id="email"
+        class="input"
+        required
+        v-model.trim="passwordForm.email"
+      />
+
+      <button class="button" @click="resetPassword">Submit</button>
+
+      <div class="links">
+        <a @click="showLoginForm = true, forgotPassword = false">Back to Login</a>
+      </div>
+    </form>
+
   </div>
 </template>
 
@@ -94,8 +118,12 @@ export default {
         email: "",
         password: ""
       },
+      passwordForm: {
+        email: ""
+      },
       showLoginForm: true,
-      errorMessage: ""
+      errorMessage: "",
+      forgotPassword: false
     }
   },
   methods: {
@@ -156,6 +184,9 @@ export default {
           console.log(err);
           this.errorMessage = err.message;
         });
+    },
+    resetPassword() {
+      
     }
   },
   computed: {
@@ -184,6 +215,10 @@ export default {
   flex-direction: column;
 }
 
+.form__heading {
+  padding-bottom: 0.5em;
+}
+
 .input {
   padding: 0.5rem;
   margin-bottom: 10px;
@@ -201,5 +236,8 @@ export default {
   padding-top: 5px;
 }
 
-
+.password-form__text {
+  padding-bottom: 1em;
+  font-style: italic;
+}
 </style>

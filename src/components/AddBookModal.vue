@@ -135,7 +135,8 @@ export default {
     },
     checkIfBookIsAlreadyInTheList() {
       console.log("selected list object: ", this.properties.selectedList)
-      return this.properties.selectedList.books.some(item => item.bookId === this.bookInfo.bookId)
+      console.log(this.properties.selectedList.books.some(item => item.bookId === this.bookInfo.id))
+      return this.properties.selectedList.books.some(item => item.bookId === this.bookInfo.id)
     }
   }
 }

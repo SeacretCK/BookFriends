@@ -79,7 +79,7 @@ const actions = {
     booklistsCollection
       .doc(listId)
       .update({
-        books: firebase.firestore.FieldValue.arrayUnion(newBook)
+        books: firebase.firestore.FieldValue.arrayUnion(newBook), merge: true
       })
       .then(() => {
         dispatch("setBooklists");
@@ -103,7 +103,7 @@ const actions = {
     booklistsCollection
       .doc(deletedBook.listId)
       .update({
-        books: updatedBooklist
+        books: updatedBooklist, merge: true
       })
       .then(() => {
         dispatch("setBooklists");
@@ -114,11 +114,11 @@ const actions = {
   },
 
   setNewSorting({ dispatch }, update) {
-    console.log(update)
+    console.log("setNewSorting", update)
     booklistsCollection
       .doc(update.listId)
       .update({
-        books: update.newSortedList
+        books: update.newSortedList, merge: true
       })
       .then(() => {
         dispatch("setBooklists");

@@ -1,9 +1,9 @@
 <template>
   <div class="modal__wrapper">
-    <div class="modal__wrapper-inner" @click.self="setNewSorting(update), $emit('close')">
+    <div class="modal__wrapper-inner" @click.self="updateSorting(), $emit('close')">
       <div class="modal__container">
         <div class="modal__header">
-          <button type="button" class="button button-close" @click="setNewSorting(update), $emit('close')"><font-awesome-icon icon="times"/></button>
+          <button type="button" class="button button-close" @click="updateSorting(), $emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
         <h2 class="modal__listName"> {{ listName }}</h2>
         
@@ -52,10 +52,10 @@ export default {
         disabled: false
       },
       update: {
-        newSortedList: [],
+        newSortedList: this.getBooksInBooklist,
         listId: this.booklistId
-      }
-      
+      },
+      listWasSorted: false
     }
   },
   methods: {
@@ -66,6 +66,7 @@ export default {
       console.log(e)
       console.log("New index: " + e.newIndex)
       console.log("Old index: " + e.oldIndex)
+      this.listWasSorted = true;
       const listArray = this.getBooksInBooklist;
       let updatedList = [];
       // maybe it is not even required to make a new array, because the following number updates seem to apply directly to bookArraySorted (that's why it's updating immediately in the list)
@@ -97,6 +98,12 @@ export default {
       console.log("updatedList", updatedList);
       console.log("bookArraySorted", this.bookArraySorted)
       this.update.newSortedList = updatedList;
+    },
+    updateSorting() {
+      if (this.listWasSorted) {
+        this.setNewSorting(this.update);
+        this.listWasSorted = false;
+      }
     }
   },
   computed: {
