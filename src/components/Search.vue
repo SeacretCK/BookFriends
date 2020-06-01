@@ -10,7 +10,7 @@
           />
         </div>
         <div class="simpleSearch__icon">
-          <button class="button button-simpleSearch" @click="runSimpleSearch(simpleSearch.input)"><font-awesome-icon icon='search' class="button-search__icon"/></button>
+          <button class="button button-simpleSearch" @click="newSimpleSearch()"><font-awesome-icon icon='search' class="button-search__icon"/></button>
         </div>
       </form>
       <a @click="toggleSearch" class="toggleSearch-link">Advanced Search</a>
@@ -39,14 +39,14 @@
           v-model.trim="advancedSearch.isbn"
         />
         <div class="advancedSearch__icon">
-          <button class="button button-advancedSearch" @click="runAdvancedSearch(advancedSearch)"><font-awesome-icon icon='search' class="button-search__icon"/></button>
+          <button class="button button-advancedSearch" @click="newAdvancedSearch()"><font-awesome-icon icon='search' class="button-search__icon"/></button>
         </div>
         <a @click="toggleSearch" class="toggleSearch-link">Back to Simple Search</a>
       </form>
     </div>
 
     <section v-if="showResults" class="section section-results">
-      <SearchResults/>
+      <SearchResults :advancedSearch="showAdvancedSearch" :inputAdvancedSearch="advancedSearch" :inputSimpleSearch="simpleSearch"></SearchResults>
     </section>
     <br>
     <h2 v-if="showErrorMessage">{{ getErrorMessage }}</h2>
@@ -66,13 +66,19 @@ export default {
   data() {
     return {
       simpleSearch: {
-        input: ""
+        input: "",
+        startIndex: 1,
+        maxResults: 10,
+        typeOfCall: "newSearch"
       },
       advancedSearch: {
         title: "",
         author: "",
         language: "",
-        isbn: ""
+        isbn: "",
+        startIndex: 1,
+        maxResults: 10,
+        typeOfCall: "newSearch"
       },
       showAdvancedSearch: false,
       showResults: false,
@@ -116,6 +122,16 @@ export default {
       this.advancedSearch.language = "";
       this.advancedSearch.isbn = "";
       this.setErrorMessage("");
+    },
+    newSimpleSearch() {
+      this.simpleSearch.startIndex = 1;
+      this.simpleSearch.typeOfCall = "newSearch"
+      this.runSimpleSearch(this.simpleSearch);
+    },
+    newAdvancedSearch() {
+      this.advancedSearch.startIndex = 1;
+      this.advancedSearch.typeOfCall = "newSearch"
+      this.runAdvancedSearch(this.advancedSearch);
     }
 
   },

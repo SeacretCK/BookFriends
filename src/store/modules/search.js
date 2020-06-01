@@ -6,34 +6,35 @@ const state = {
 
 const getters = {
   getSearchResults: state => state.searchResults,
-  getErrorMessage: state => state.errorMessage
+  getErrorMessage: state => state.errorMessage,
+  getTotalItems: state => state.totalItems
 };
 
 const actions = {
-  runSimpleSearch({ commit }, input) {
+  runSimpleSearch({ dispatch, commit }, input) {
     commit("setErrorMessage", "");
-    commit("setSearchResults", []);
-    console.log(input)
-    const searchString = input.replace(/[`~@#$%^&*()|=;:',.<>{}[\]/\s]+/gi, '+')
-    console.log(searchString)
+    
+    if (input.typeOfCall === "newSearch") {
+      commit("clearSearchResults")
+    }
 
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchString}&key=${state.apiKey}`)
-        .then(response => response.json())
-        .then(data => {
-          let searchResults = [...data.items];
-          console.log(searchResults)
-          commit("setSearchResults", searchResults)
-        })
-        .catch(error => {
-          console.log("error while fetching", error.message);
-          let message = "The search was not successful.";
-          commit("setErrorMessage", message);
-        })
+    console.log("Input for Search", input)
+    const searchTerm = input.input.replace(/[`~@#$%^&*()|=;:',.<>{}[\]/\s]+/gi, '+')
+    const startIndex = `&startIndex=${input.startIndex}`;
+    const maxResults = `&maxResults=${input.maxResults}`;
+    const searchString = searchTerm + startIndex + maxResults;
+    console.log("SearchString: ", searchString)
+
+    dispatch("runSearch", searchString);
   },
-  runAdvancedSearch({ commit }, input) {
+  runAdvancedSearch({ dispatch, commit }, input) {
     commit("setErrorMessage", "");
-    commit("setSearchResults", []);
-    console.log(input)
+
+    if (input.typeOfCall === "newSearch") {
+      commit("clearSearchResults")
+    }
+
+    console.log("Input for Search", input)
     let title = "";
     let author = "";
     let isbn = "";
@@ -54,22 +55,28 @@ const actions = {
     if (input.language) {
       language = `&langRestrict=${input.language}`
     }
-    
-    const searchString = title + author + isbn + language;
-    console.log(searchString)
 
+    const startIndex = `&startIndex=${input.startIndex}`;
+    const maxResults = `&maxResults=${input.maxResults}`;
+    
+    const searchString = title + author + isbn + language + startIndex + maxResults;
+    console.log("SearchString: ", searchString)
+
+    dispatch("runSearch", searchString);
+  },
+  runSearch({ commit }, searchString) {
     fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchString}&key=${state.apiKey}`)
-        .then(response => response.json())
-        .then(data => {
-          let searchResults = [...data.items];
-          console.log(searchResults)
-          commit("setSearchResults", searchResults)
-        })
-        .catch(error => {
-          console.log("error while fetching", error.message);
-          let message = "The search was not successful.";
-          commit("setErrorMessage", message);
-        })
+      .then(response => response.json())
+      .then(data => {
+        let searchResults = [...data.items];
+        console.log("searchResults from the response: ", searchResults)
+        commit("setSearchResults", searchResults) 
+      })
+      .catch(error => {
+        console.log("error while fetching", error.message);
+        let message = "The search was not successful.";
+        commit("setErrorMessage", message);
+      })
   },
   setErrorMessage({ commit }, message) {
     commit("setErrorMessage", message);
@@ -79,8 +86,11 @@ const actions = {
 
 const mutations = {
   setSearchResults(state, searchResults) {
-    state.searchResults = searchResults;
+    state.searchResults = [...state.searchResults, ...searchResults];
     console.log("state.searchResults:", state.searchResults);
+  },
+  clearSearchResults(state) {
+    state.searchResults = [];
   },
   setErrorMessage(state, message) {
     state.errorMessage = message;

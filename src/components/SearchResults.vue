@@ -4,7 +4,9 @@
     <hr>
     <div v-for="book in getSearchResults" :key="book.id" class="books__item" @click="bookDetails(book.id)">
       <div class="book__image">
-        <img v-if="book.volumeInfo.imageLinks" :src="book.volumeInfo.imageLinks.thumbnail || book.volumeInfo.imageLinks.smallThumbnail">
+        <img 
+          v-if="book.volumeInfo.imageLinks" 
+          :src="book.volumeInfo.imageLinks.thumbnail || book.volumeInfo.imageLinks.smallThumbnail">
         <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
       </div>
       <div class="book__info">
@@ -25,6 +27,10 @@
       <AddBookModal v-on:close="close" :bookInfo="bookModal.clickedBookObject"></AddBookModal>
     </section>
 
+    <div>
+      <button type="button" class="button" @click="showMoreResults()">Show more Results</button>
+    </div>   
+
   </div>
 </template>
 
@@ -33,7 +39,7 @@
 import BookInfoModal from "@/components/BookInfoModal.vue";
 import AddBookModal from "@/components/AddBookModal.vue";
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: "SearchResults",
@@ -41,6 +47,11 @@ export default {
     BookInfoModal,
     AddBookModal
   },
+  props: [
+    "advancedSearch",
+    "inputAdvancedSearch",
+    "inputSimpleSearch"
+  ],
   data() {
     return {
       bookModal: {
@@ -49,10 +60,14 @@ export default {
         clickedBookObject: null
       },
       defaultBookImage: "",
-      showAddBookModal: false
+      showAddBookModal: false,
     }
   },
   methods: {
+    ...mapActions([
+      "runSimpleSearch",
+      "runAdvancedSearch"
+    ]),
     bookDetails(id) {
       this.bookModal.showBookInfoModal = true;
       this.bookModal.clickedBookId = id;
@@ -69,16 +84,29 @@ export default {
       this.showAddBookModal = false;
       document.body.classList.remove('modal-open');
     },
+    showMoreResults() {
+      if (!this.advancedSearch) {
+        this.inputSimpleSearch.typeOfCall = "addResults";
+        this.inputSimpleSearch.startIndex = this.getSearchResults.length + 1;
+        this.runSimpleSearch(this.inputSimpleSearch);
+      } else {
+        this.inputAdvancedSearch.typeOfCall = "addResults";
+        this.inputAdvancedSearch.startIndex = this.getSearchResults.length + 1;
+        this.runAdvancedSearch(this.inputAdvancedSearch);
+      }
+    }
+    
   },
   computed: {
     ...mapGetters([
       "getSearchResults",
-      "getDefaultProfilePicture"
+      "getDefaultProfilePicture",
     ]),
     clickedBookInfo() {
       return this.getSearchResults.filter(item => item.id === this.bookModal.clickedBookId)
       // returns an array with one object
-    }
+    },
+    
   }
 }
 </script>
