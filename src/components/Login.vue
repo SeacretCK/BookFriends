@@ -77,24 +77,32 @@
       </div>
     </form>
 
-    <form v-if="forgotPassword" class="form" @submit.prevent>
-      <h2 class="form__heading">Reset Password</h2>
-      <p class="password-form__text">We will send you an email to reset your password</p>
+    <form v-if="forgotPassword" @submit.prevent>
+      <div v-if="!resetPasswordSuccess" class="form">
+        <h2 class="form__heading">Reset Password</h2>
+        <p class="password-form__text">We will send you an email to reset your password</p>
 
-      <label for="email" class="label">Email</label>
-      <input
-        type="text"
-        placeholder="email@email.com"
-        id="email"
-        class="input"
-        required
-        v-model.trim="passwordForm.email"
-      />
+        <label for="email" class="label">Email</label>
+        <input
+          type="text"
+          placeholder="email@email.com"
+          id="email"
+          class="input"
+          required
+          v-model.trim="passwordForm.email"
+        />
 
-      <button class="button" @click="resetPassword">Submit</button>
+        <button class="button" @click="resetPassword">Submit</button>
 
-      <div class="links">
-        <a @click="showLoginForm = true, forgotPassword = false">Back to Login</a>
+        <div class="links">
+          <a @click="showLoginForm = true, forgotPassword = false">Back to Login</a>
+        </div>
+      </div>
+ 
+      <div v-else>
+        <h2 class="form__heading">Email sent</h2>
+        <p class="password-form__text">Check your email for a link to reset your password</p>
+        <button class="button" @click="showLoginForm = true, forgotPassword = false, resetPasswordSuccess = false">Back to Login</button>
       </div>
     </form>
 
@@ -123,7 +131,8 @@ export default {
       },
       showLoginForm: true,
       errorMessage: "",
-      forgotPassword: false
+      forgotPassword: false,
+      resetPasswordSuccess: false
     }
   },
   methods: {
@@ -186,6 +195,15 @@ export default {
         });
     },
     resetPassword() {
+      auth
+        .sendPasswordResetEmail(this.passwordForm.email)
+        .then(() => {
+          this.passwordForm.email = '';
+          this.resetPasswordSuccess = true;
+      }).catch(err => {
+          console.log(err);
+          this.errorMessage = err.message;
+      });
       
     }
   },
