@@ -1,5 +1,12 @@
 <template>
   <div class="login-card">
+
+    <transition name="fade">
+      <div v-if="performingRequest" class="loading">
+        <p>Loading...</p>
+      </div>
+    </transition>
+
     <p class="login-error" v-if="errorMessage">*{{ errorMessage }}*</p>
 
     <!-- LOGIN FORM -->
@@ -132,7 +139,8 @@ export default {
       showLoginForm: true,
       errorMessage: "",
       forgotPassword: false,
-      resetPasswordSuccess: false
+      resetPasswordSuccess: false,
+      performingRequest: false
     }
   },
   methods: {
@@ -145,6 +153,7 @@ export default {
       this.errorMessage = "";
     },
     signup() {
+      this.performingRequest = true;
       auth
         .createUserWithEmailAndPassword(
           this.signupForm.email,
@@ -172,13 +181,17 @@ export default {
               console.log(err);
               this.errorMessage = err.message;
             });
+          
+          this.performingRequest = false;
         })
         .catch(err => {
           console.log(err);
+          this.performingRequest = false;
           this.errorMessage = err.message;
         });
     },
     login() {
+      this.performingRequest = true;
       auth
         .signInWithEmailAndPassword(
           this.loginForm.email,
@@ -187,21 +200,25 @@ export default {
         .then(data => {
           this.setCurrentUser(data.user);
           this.setUserProfile();
-          //this.$router.push("/dashboard");
+          this.performingRequest = false;
         })
         .catch(err => {
           console.log(err);
+          this.performingRequest = false;
           this.errorMessage = err.message;
         });
     },
     resetPassword() {
+      this.performingRequest = true;
       auth
         .sendPasswordResetEmail(this.passwordForm.email)
         .then(() => {
           this.passwordForm.email = '';
+          this.performingRequest = false;
           this.resetPasswordSuccess = true;
       }).catch(err => {
           console.log(err);
+          this.performingRequest = false;
           this.errorMessage = err.message;
       });
       

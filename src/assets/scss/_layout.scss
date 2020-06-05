@@ -62,3 +62,38 @@
 .modal-open {
   overflow: hidden;
 }
+
+
+// transition
+
+.fade-enter-active {
+	transition: opacity 0.5s;
+}
+.fade-leave-active {
+	transition: opacity 0s;
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
+}
+
+.loading {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba($color-dark-grey, 0.4);
+	z-index: 9999;
+
+	p {
+		background: $color-white;
+		width: 150px;
+		text-align: center;
+		margin: 40vh auto 0;
+    padding: 40px 0;
+		border-radius: 3px;
+		box-shadow: 0 0 20px 0 rgba($color-dark-grey, 0.5);
+	}
+}
