@@ -47,7 +47,10 @@
                   />
                 </div>
               </div>
-              <button type="button" :disabled="!properties.selectedList" class="button" @click="add">Add book</button>
+              <div class="button-wrapper" @click="reminder">
+                <button type="button" :disabled="!properties.selectedList" class="button" @click="add">Add book</button>
+              </div>
+              
             </form>
           </div>
         </div>
@@ -94,7 +97,11 @@ export default {
         this.addBookToList(this.properties)
         this.$emit('close')
       }
-
+    },
+    reminder() {
+      if (!this.properties.selectedList) {
+        this.addBookAlert = "Please select a list!"
+      }
     },
     createNewList() {
       this.newListNameAlert = "";
@@ -226,6 +233,10 @@ export default {
     text-align: left;
     font-size: 14px;
     font-weight: 700;
+  }
+
+  .button-wrapper {
+    display: inline-block;
   }
 
   .alert {
