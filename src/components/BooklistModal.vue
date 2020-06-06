@@ -1,9 +1,9 @@
 <template>
   <div class="modal__wrapper">
-    <div class="modal__wrapper-inner" @click.self="updateSorting(), $emit('close')">
+    <div class="modal__wrapper-inner" @click.self="$emit('close')">
       <div class="modal__container">
         <div class="modal__header">
-          <button type="button" class="button button-close" @click="updateSorting(), $emit('close')"><font-awesome-icon icon="times"/></button>
+          <button type="button" class="button button-close" @click="$emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
         <h2 class="modal__listName"> {{ listName }}</h2>
         
@@ -73,7 +73,7 @@ export default {
 
       if (e.oldIndex > e.newIndex) {
         listArray.forEach(book => {
-          if (book.number > e.newIndex) {
+          if (book.number > e.newIndex && book.number < e.oldIndex + 2) {
             if (book.number === e.oldIndex + 1) {
               book.number = e.newIndex + 1;
             } else {
@@ -98,6 +98,7 @@ export default {
       console.log("updatedList", updatedList);
       console.log("bookArraySorted", this.bookArraySorted)
       this.update.newSortedList = updatedList;
+      this.updateSorting();
     },
     updateSorting() {
       if (this.listWasSorted) {

@@ -79,7 +79,7 @@ const actions = {
     booklistsCollection
       .doc(listId)
       .update({
-        books: firebase.firestore.FieldValue.arrayUnion(newBook), merge: true
+        books: firebase.firestore.FieldValue.arrayUnion(newBook)
       })
       .then(() => {
         dispatch("setBooklists");
@@ -103,7 +103,7 @@ const actions = {
     booklistsCollection
       .doc(deletedBook.listId)
       .update({
-        books: updatedBooklist, merge: true
+        books: updatedBooklist
       })
       .then(() => {
         dispatch("setBooklists");
@@ -118,7 +118,7 @@ const actions = {
     booklistsCollection
       .doc(update.listId)
       .update({
-        books: update.newSortedList, merge: true
+        books: update.newSortedList
       })
       .then(() => {
         dispatch("setBooklists");
@@ -160,20 +160,15 @@ const actions = {
 
   deleteBook({ dispatch }, deletedBook) {
     console.log("deleted book", deletedBook);
-    // to use arrayRemove you have to pass the exact object that should be removed (https://stackoverflow.com/questions/59694940/fieldvalue-arrayremove-to-remove-an-object-from-array-of-objects-based-on-prop)
     
     const booklist = state.booklists.filter(item => item.listId === deletedBook.listId);
     const booksArray = booklist[0].books;
-    const bookObject = booksArray.filter(item => item.bookId === deletedBook.bookId)[0];
-    const objectToDelete = {
-      bookId: bookObject.bookId,
-      comment: bookObject.comment,
-      number: bookObject.number
-    }
+    
     booklistsCollection
     .doc(deletedBook.listId)
     .update({
-      books: firebase.firestore.FieldValue.arrayRemove(objectToDelete)
+      // replacing books with everything except the deleted book
+      books: booksArray.filter(book => book.bookId !== deletedBook.bookId)
     })
     .then(() => {
       console.log("successfully deleted");
@@ -183,15 +178,15 @@ const actions = {
     });
 
     setTimeout(() => {
-      console.log("timeout");
+      console.log("timeout setBooklists");
       dispatch("setBooklists");
     }, 2000);
     setTimeout(() => {
-      console.log("timeout");
+      console.log("timeout updateBookNumbers");
       dispatch("updateBookNumbers", deletedBook);
     }, 3000);
     setTimeout(() => {
-      console.log("timeout");
+      console.log("timeout setBooksInBooklist");
       dispatch("setBooksInBooklist", deletedBook.listId);
     }, 4000);
   },
