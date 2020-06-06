@@ -20,7 +20,7 @@
     </div>
 
     <div class="book__delete">
-      <button type="button" class="button button-close" @click="deleteBook(updatedBook)"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
+      <button type="button" class="button button-close" @click="remove"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
     </div>
 
   </div>
@@ -43,7 +43,7 @@ export default {
         bookId: this.book.bookId,
         comment: this.book.comment,
         listId: this.booklistId,
-        number: this.book.number
+        number: ""
       },
       comment: this.book.comment
     }
@@ -56,6 +56,10 @@ export default {
       "updateBookComment",
       "deleteBook"
     ]),
+    remove() {
+      this.updatedBook.number = this.book.number; // need to set it here so it's the actual number after possible sorting (didn't update in data)
+      this.deleteBook(this.updatedBook)
+    },
 
     editComment() {
       this.editableComment = true;

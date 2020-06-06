@@ -176,7 +176,7 @@ const actions = {
     .catch(err => {
       console.log(err);
     });
-
+    console.log("deletedBook", deletedBook)
     setTimeout(() => {
       console.log("timeout setBooklists");
       dispatch("setBooklists");
