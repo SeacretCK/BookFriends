@@ -55,7 +55,7 @@ export default {
 
   methods: {
     ...mapActions([
-
+      "setPosts"
     ]),
     createPost() {
       postsCollection
@@ -73,6 +73,7 @@ export default {
           console.log(ref);
           this.post.content = "";
           this.$emit('close');
+          this.setPosts();
         })
         .catch(err => {
           console.log(err);
