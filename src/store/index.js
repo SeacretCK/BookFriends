@@ -4,6 +4,7 @@ import mostDiscussedBooks from "./modules/mostDiscussedBooks"
 import user from "./modules/user"
 import booklists from "./modules/booklists"
 import search from "./modules/search"
+import forum from "./modules/forum"
 
 
 import { auth } from "@/firebaseConfig"
@@ -37,6 +38,7 @@ export const store = new Vuex.Store({
     mostDiscussedBooks,
     user,
     booklists,
-    search
+    search,
+    forum
   }
 })
