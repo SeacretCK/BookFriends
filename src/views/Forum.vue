@@ -2,7 +2,6 @@
   <div class="wrapper">
     <section class="section">
       <p>Under construction! :)</p>
-      <h4>Likes don't get updated right away yet... Sorry!</h4>
       <br>
       <br>
       <h1>Share your opinion!</h1>
