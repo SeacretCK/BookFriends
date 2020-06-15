@@ -14,15 +14,24 @@
             </div>
             
             <div class="infos">
-              <span class="like tooltip-like">
-                <a @click="likePost()">
-                  <font-awesome-icon icon='heart' class="icon"/>
-                </a> {{ likes }}
+              <span v-if="userHasLiked" class="like tooltip-like">
+                <a @click="dislikePost()">
+                  <font-awesome-icon icon="heart" class="icon"/>
+                </a>
+                {{ likes }}
                 <span class="tooltiptext-like">Like</span>
               </span>
+              
+              <span v-if="!userHasLiked" class="like tooltip-like">
+                <a @click="likePost()">
+                  <font-awesome-icon :icon="['far', 'heart']" class="icon"/>
+                </a>
+                {{ likes }}
+                <span class="tooltiptext-like">Like</span>
+              </span>
+
               <p class="alert" v-if="alert"> {{ alert }} </p>
             </div>
-
           </div>
 
           <div class="post__content">
@@ -148,9 +157,7 @@ export default {
         });
     },
     likePost() {
-      if (this.post.usersThatLiked.includes(this.getCurrentUser.uid)) {
-        this.alert = "You already liked that post"
-      } else if (this.post.userId === this.getCurrentUser.uid) {
+      if (this.post.userId === this.getCurrentUser.uid) {
         this.alert = "You can't like your own post"
       } else {
         let newUserArray = [...this.post.usersThatLiked, this.getCurrentUser.uid]
@@ -169,13 +176,36 @@ export default {
             console.log(err);
           });
       }
-    }
+    },
+    dislikePost() {
+        let newUserArray = [...this.post.usersThatLiked];
+        let userIndex = newUserArray.indexOf(this.getCurrentUser.uid);
+        newUserArray.splice(userIndex, 1);
+
+        postsCollection
+          .doc(this.post.id)
+          .update({
+            usersThatLiked: newUserArray,
+            likes: this.post.likes - 1
+          })
+          .then(() => {
+            console.log("post disliked")
+            this.setPosts();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+  
   },
   computed: {
     ...mapGetters([
       "getCurrentUser",
       "getUserProfile"
-    ])
+    ]),
+    userHasLiked() {
+      return this.post.usersThatLiked.includes(this.getCurrentUser.uid)
+    }
   },
   filters: {
     formatDate(val) {
@@ -183,7 +213,7 @@ export default {
         return "-";
       }
       let date = val.toDate();
-      return moment(date).format('MMMM Do YYYY, h:mm:ss a');
+      return moment(date).format('MMMM Do YYYY, k:mm:ss');
     },
   }
 }

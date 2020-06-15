@@ -5,9 +5,10 @@ import { store } from './store'
 import firebase from "firebase/app";
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrashAlt, faCaretDown, faTimes, faSearch, faBookOpen, faCheck, faPen, faHeart, faComment } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faCaretDown, faTimes, faSearch, faBookOpen, faCheck, faPen, faComment, faHeart as fasHeart} from '@fortawesome/free-solid-svg-icons'
+import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faTrashAlt, faCaretDown, faTimes, faSearch, faBookOpen, faCheck, faPen, faHeart, faComment)
+library.add(faTrashAlt, faCaretDown, faTimes, faSearch, faBookOpen, faCheck, faPen, farHeart, fasHeart, faComment)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 import vSelect from 'vue-select'
