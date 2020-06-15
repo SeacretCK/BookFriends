@@ -2,6 +2,7 @@
   <div class="wrapper">
     <section class="section">
       <p>Under construction! :)</p>
+      <h4>Likes don't get updated right away yet... Sorry!</h4>
       <br>
       <br>
       <h1>Share your opinion!</h1>
@@ -12,7 +13,9 @@
         <CreatePostModal v-on:close="close()"></CreatePostModal>
       </section>
       
-      
+      <section v-if="showFullPost">
+        <ViewPostModal v-on:close="close()" :post="fullPost" :likes="fullPost.likes"></ViewPostModal>
+      </section>
 
       <div class="posts">
         <h1 class="posts-title">Latest Posts</h1>
@@ -33,12 +36,8 @@
                   {{ post.likes }}
                 <span class="tooltiptext-like">Likes</span>
               </span>
-              <span class="info"><a @click="openViewPostModal()">view full post</a></span>
+              <span class="info"><a @click="openViewPostModal(post)">view full post</a></span>
             </div>
-
-            <section v-if="showFullPost">
-              <ViewPostModal v-on:close="close()" :post="post"></ViewPostModal>
-            </section>
 
           </div>
         </div>
@@ -66,7 +65,8 @@ export default {
   data() {
     return {
       showCreatePost: false,
-      showFullPost: false
+      showFullPost: false,
+      fullPost: {}
     }
   },
   methods: {
@@ -77,7 +77,8 @@ export default {
       this.showCreatePost = true;
       document.body.classList.add('modal-open');
     },
-    openViewPostModal() {
+    openViewPostModal(post) {
+      this.fullPost = post;
       this.showFullPost = true;
       document.body.classList.add('modal-open');
     },
@@ -92,10 +93,17 @@ export default {
       "getPosts"
     ]),
   },
+  watch: {
+    getPosts(newVal) {
+      console.log("watcher getPosts", newVal);
+      let updatedPost = newVal.find(item => item.id === this.fullPost.id)
+      this.fullPost = updatedPost;
+    }
+  },
   created() {
     this.setPosts();
   },
-
+  
   filters: {
     formatDate(val) {
       if (!val) {

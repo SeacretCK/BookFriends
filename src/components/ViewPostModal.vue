@@ -17,7 +17,7 @@
               <span class="like tooltip-like">
                 <a @click="likePost()">
                   <font-awesome-icon icon='heart' class="icon"/>
-                </a> {{ post.likes }}
+                </a> {{ likes }}
                 <span class="tooltiptext-like">Like</span>
               </span>
               <p class="alert" v-if="alert"> {{ alert }} </p>
@@ -70,7 +70,8 @@ import { commentsCollection, postsCollection } from "@/firebaseConfig"
 export default {
   name: "ViewPostModal",
   props: [
-    "post"
+    "post",
+    "likes"
   ],
   data() {
     return {
@@ -176,7 +177,6 @@ export default {
       "getUserProfile"
     ])
   },
-  
   filters: {
     formatDate(val) {
       if (!val) {
