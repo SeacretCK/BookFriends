@@ -19,7 +19,7 @@
                   <font-awesome-icon icon="heart" class="icon"/>
                 </a>
                 {{ likes }}
-                <span class="tooltiptext-like">Like</span>
+                <span class="tooltiptext-like">Dislike</span>
               </span>
               
               <span v-if="!userHasLiked" class="like tooltip-like">
