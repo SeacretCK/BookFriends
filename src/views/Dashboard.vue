@@ -60,10 +60,10 @@
       <h2 class="books__heading">Most discussed books this week</h2>
       <div class="books__container">
         <div v-for="book in mostDiscussedBooksSorted" :key="book.id" class="books__item" @click="bookDetails(book.number)">
-          <h3 class="book__title">  {{ book.volumeInfo.title }} </h3>
-          <p class="book__author"> {{ book.volumeInfo.authors.toString() }} </p>
+          <h3 class="book__title">  {{ book.details.title }} </h3>
+          <p class="book__author"> {{ book.details.authors.toString() }} </p>
           <div class="book__image">
-            <img :src="book.volumeInfo.imageLinks.thumbnail">
+            <img :src="book.details.imageLinks.thumbnail">
           </div>
         </div>
       </div>

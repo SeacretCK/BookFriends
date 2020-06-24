@@ -73,20 +73,31 @@ const actions = {
     const number = booklist.books.length + 1;
     const newBook = {
       number: number, 
-      bookId: properties.book.id,
-      comment: comment
+      bookId: properties.book.bookId,
+      comment: comment,
+      details: null
     };
-    booklistsCollection
-      .doc(listId)
-      .update({
-        books: firebase.firestore.FieldValue.arrayUnion(newBook)
-      })
-      .then(() => {
-        dispatch("setBooklists");
-      })
-      .catch(err => {
-        console.log(err);
-      });
+
+    fetch(`https://www.googleapis.com/books/v1/volumes/${newBook.bookId}?key=${state.apiKey}`)
+      .then(response => response.json())
+      .then(data => {
+        newBook.details = data.volumeInfo
+        console.log("new Book to be added: ", newBook)
+        booklistsCollection
+          .doc(listId)
+          .update({
+            books: firebase.firestore.FieldValue.arrayUnion(newBook)
+          })
+          .then(() => {
+            dispatch("setBooklists");
+          })
+          .catch(err => {
+            console.log(err);
+          });
+          })
+      .catch(error => console.log(error))
+
+    
   },
   updateBookNumbers({ dispatch }, deletedBook) {
     const deletedNumber = deletedBook.number;
@@ -199,18 +210,18 @@ const actions = {
     let fetchedBooks = [];
     booksArray.forEach(book => {
       fetch(`https://www.googleapis.com/books/v1/volumes/${book.bookId}?key=${state.apiKey}`)
-          .then(response => response.json())
-          .then(data => {
-            fetchedBooks.push(
-              {
-                number: book.number,
-                bookId: book.bookId,
-                comment: book.comment,
-                details: data.volumeInfo
-              }
-            );
-          })
-          .catch(error => console.log(error))
+        .then(response => response.json())
+        .then(data => {
+          fetchedBooks.push(
+            {
+              number: book.number,
+              bookId: book.bookId,
+              comment: book.comment,
+              details: data.volumeInfo
+            }
+          );
+        })
+        .catch(error => console.log(error))
     });
     console.log("fetched books to be set: ", fetchedBooks);
     commit("setBooksInBooklist", fetchedBooks);

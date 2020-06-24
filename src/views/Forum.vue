@@ -1,9 +1,7 @@
 <template>
   <div class="wrapper">
     <section class="section">
-      <p>Under construction! :)</p>
-      <br>
-      <br>
+
       <h1>Share your opinion!</h1>
       <br>
       <button class="button" @click="openCreatePostModal">Create a new Post</button>
@@ -16,12 +14,28 @@
         <ViewPostModal v-on:close="close()" :post="fullPost" :likes="fullPost.likes"></ViewPostModal>
       </section>
 
-      <div class="posts">
+      <section v-if="showUserProfile">
+        <UserProfile v-on:close="close()" :userId="profile.userId"></UserProfile>
+      </section>
+
+      <section v-if="showSendMessage">
+        <SendMessage v-on:close="close()" :recipientId="message.userId" :recipientName="message.name"></SendMessage>
+      </section>
+
+      <div v-if="!showCreatePost && !showFullPost && !showSendMessage && !showUserProfile" class="posts">
         <h1 class="posts-title">Latest Posts</h1>
         <div v-if="getPosts.length" class="posts-item">
           <div v-for="(post, index) in getPosts" class="post" :key="index">
             <h2 class="post-title">{{ post.title }}</h2>
-            <p class="post-author">by {{ post.userName }}</p>
+            <p class="post-author">by 
+              <span class="usermenu-anchor">
+                <a>{{ post.userName }}</a> 
+                <span class="usermenu-links">
+                  <a @click="openProfile(post.userId)">View profile</a>
+                  <a @click="openMessage(post.userId, post.userName)">Write a message</a>
+                </span>
+              </span>
+            </p>
             <p class="post-date">posted {{ post.createdOn | formatDate }}</p>
             <p class="post-content">{{ post.content | trimLength }}</p>
             <div class="infos">
@@ -53,19 +67,32 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreatePostModal from "@/components/CreatePostModal.vue"
 import ViewPostModal from "@/components/ViewPostModal.vue"
+import UserProfile from "@/components/UserProfile.vue"
+import SendMessage from "@/components/SendMessage.vue"
 import moment from 'moment'
 
 export default {
   name: 'Forum',
   components: {
     CreatePostModal,
-    ViewPostModal
+    ViewPostModal,
+    UserProfile,
+    SendMessage
   },
   data() {
     return {
       showCreatePost: false,
       showFullPost: false,
-      fullPost: {}
+      fullPost: {},
+      showUserProfile: false,
+      profile: {
+        userId: ""
+      },
+      showSendMessage: false,
+      message: {
+        userId: "",
+        name: ""
+      }
     }
   },
   methods: {
@@ -81,9 +108,27 @@ export default {
       this.showFullPost = true;
       document.body.classList.add('modal-open');
     },
+    openProfile(userId) {
+      console.log("openProfile", userId);
+      this.profile.userId = userId;
+      this.showUserProfile = true;
+      document.body.classList.add('modal-open');
+    },
+    openMessage(userId, userName) {
+      console.log("openMessage", userId);
+      this.message.userId = userId;
+      this.message.name = userName;
+      this.showSendMessage = true;
+      document.body.classList.add('modal-open');
+    },
     close() {
       this.showCreatePost = false;
       this.showFullPost = false;
+      this.message.userId = "";
+      this.message.name = "";
+      this.profile.userId = "";
+      this.showSendMessage = false;
+      this.showUserProfile = false;
       document.body.classList.remove('modal-open');
     },
   },
@@ -165,16 +210,20 @@ export default {
 }
 
 .tooltip-like,
-.tooltip-comment {
+.tooltip-comment,
+.usermenu-anchor {
   position: relative;
 }
 
 .tooltip-like .tooltiptext-like,
-.tooltip-comment .tooltiptext-comment {
+.tooltip-comment .tooltiptext-comment,
+.usermenu-anchor .usermenu-links  {
   visibility: hidden;
   width: 120px;
   @include set-background($color-medium-grey);
   text-align: center;
+  font-size: 1.2rem;
+  border: 0.1px solid $color-white;
   border-radius: 6px;
   padding: 5px 0;
 
@@ -188,8 +237,23 @@ export default {
 }
 
 .tooltip-like:hover .tooltiptext-like,
-.tooltip-comment:hover .tooltiptext-comment {
+.tooltip-comment:hover .tooltiptext-comment,
+.usermenu-anchor:hover .usermenu-links {
   visibility: visible;
+}
+
+.usermenu-anchor .usermenu-links {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+
+  a {
+    color: inherit;
+
+    &:hover {
+      color: $color-light-blue;
+    }
+  }
 }
 
 </style>

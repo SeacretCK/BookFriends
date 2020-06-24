@@ -34,7 +34,7 @@ const actions = {
               {
                 number: book.number,
                 id: data.id,
-                volumeInfo: data.volumeInfo
+                details: data.volumeInfo
               }
             );
           })

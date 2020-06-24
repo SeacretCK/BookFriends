@@ -2,7 +2,10 @@
   <div class="card__container"> 
 
     <div class="card__imageBox draggable-handle">
-      <img class="book__image" :src="book.details.imageLinks.thumbnail">
+      <img class="book__image"
+          v-if="book.details.imageLinks" 
+          :src="book.details.imageLinks.thumbnail || book.details.imageLinks.smallThumbnail">
+      <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
     </div>  
 
     <div class="card__infos">
@@ -86,12 +89,20 @@ export default {
   }
 
   .card__imageBox {
+    width: 40%;
     padding: 10px;
     text-align: left;
   }
 
   .book__image {
     height: 150px;
+  }
+
+  .book__default-icon {
+    width: auto;
+    height: 130px;
+    object-fit: contain;
+    color: $color-medium-grey;
   }
 
   .card__infos {

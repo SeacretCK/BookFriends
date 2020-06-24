@@ -1,7 +1,16 @@
 <template>
   <div class="modal__wrapper">
     <div class="modal__wrapper-inner" @click.self="$emit('close')">
-      <div class="modal__container">
+
+      <section v-if="showUserProfile">
+        <UserProfile v-on:close="close()" :userId="profile.userId"></UserProfile>
+      </section>
+
+      <section v-if="showSendMessage">
+        <SendMessage v-on:close="close()" :recipientId="message.userId" :recipientName="message.name"></SendMessage>
+      </section>
+
+      <div v-if="!showSendMessage && !showUserProfile" class="modal__container">
         <div class="modal__header">
           <button type="button" class="button button-close" @click="$emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
@@ -10,7 +19,14 @@
           <div class="post__header">
             <div>
               <h2 class="post-title">{{ post.title }}</h2>
-              <p class="post-info">posted by {{ post.userName }} on {{ post.createdOn | formatDate }}</p>
+              <p class="post-info">posted by 
+                <span class="usermenu-anchor">
+                  <a>{{ post.userName }}</a> 
+                  <span class="usermenu-links">
+                    <a @click="openProfile(post.userId)">View profile</a>
+                    <a @click="openMessage(post.userId, post.userName)">Write a message</a>
+                  </span>
+                </span> on {{ post.createdOn | formatDate }}</p>
             </div>
             
             <div class="infos">
@@ -43,7 +59,15 @@
           <div v-if="postComments.length" class="post-comments">
             <div v-for="(comment, index) in postComments" class="comment" :key="index">
               <p class="comment-content">{{ comment.content }}</p>
-              <p class="comment-info">posted by {{ comment.userName }} on {{ comment.createdOn | formatDate }}</p>
+              <p class="comment-info">posted by 
+                <span class="usermenu-anchor">
+                  <a>{{ comment.userName }}</a> 
+                  <span class="usermenu-links">
+                    <a @click="openProfile(comment.userId)">View profile</a>
+                    <a @click="openMessage(comment.userId, comment.userName)">Write a message</a>
+                  </span>
+                </span>
+                on {{ comment.createdOn | formatDate }}</p>
             </div>
           </div>
           
@@ -75,9 +99,16 @@
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
 import { commentsCollection, postsCollection } from "@/firebaseConfig"
+import UserProfile from "@/components/UserProfile.vue"
+import SendMessage from "@/components/SendMessage.vue"
+
 
 export default {
   name: "ViewPostModal",
+  components: {
+    UserProfile,
+    SendMessage
+  },
   props: [
     "post",
     "likes"
@@ -90,9 +121,18 @@ export default {
         userId: "",
         userName: "",
         content: "",
-        counter: this.post.comments
+        counter: ""
       },
-      alert: ""
+      alert: "",
+      showUserProfile: false,
+      profile: {
+        userId: ""
+      },
+      showSendMessage: false,
+      message: {
+        userId: "",
+        name: ""
+      }
     }
   },
   created() {
@@ -119,6 +159,7 @@ export default {
           });
 
           this.postComments = commentsArray;
+          this.comment.counter = commentsArray.length
         })
         .catch(err => {
           console.log(err);
@@ -178,24 +219,45 @@ export default {
       }
     },
     dislikePost() {
-        let newUserArray = [...this.post.usersThatLiked];
-        let userIndex = newUserArray.indexOf(this.getCurrentUser.uid);
-        newUserArray.splice(userIndex, 1);
+      let newUserArray = [...this.post.usersThatLiked];
+      let userIndex = newUserArray.indexOf(this.getCurrentUser.uid);
+      newUserArray.splice(userIndex, 1);
 
-        postsCollection
-          .doc(this.post.id)
-          .update({
-            usersThatLiked: newUserArray,
-            likes: this.post.likes - 1
-          })
-          .then(() => {
-            console.log("post disliked")
-            this.setPosts();
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
+      postsCollection
+        .doc(this.post.id)
+        .update({
+          usersThatLiked: newUserArray,
+          likes: this.post.likes - 1
+        })
+        .then(() => {
+          console.log("post disliked")
+          this.setPosts();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    openProfile(userId) {
+      console.log("openProfile", userId);
+      this.profile.userId = userId;
+      this.showUserProfile = true;
+      document.body.classList.add('modal-open');
+    },
+    openMessage(userId, userName) {
+      console.log("openMessage", userId);
+      this.message.userId = userId;
+      this.message.name = userName;
+      this.showSendMessage = true;
+      document.body.classList.add('modal-open');
+    },
+    close() {
+      this.message.userId = "";
+      this.message.name = "";
+      this.profile.userId = "";
+      this.showSendMessage = false;
+      this.showUserProfile = false;
+      document.body.classList.remove('modal-open');
+    },
   
   },
   computed: {
@@ -284,15 +346,18 @@ export default {
     color: $color-red;
   }
 
-  .tooltip-like {
+  .tooltip-like,
+  .usermenu-anchor {
     position: relative;
   }
 
-  .tooltip-like .tooltiptext-like {
+  .tooltip-like .tooltiptext-like,
+  .usermenu-anchor .usermenu-links {
     visibility: hidden;
     width: 120px;
     @include set-background($color-medium-grey);
     text-align: center;
+    font-size: 1.2rem;
     border-radius: 6px;
     padding: 5px 0;
 
@@ -305,9 +370,26 @@ export default {
     margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
   }
 
-  .tooltip-like:hover .tooltiptext-like {
+  .tooltip-like:hover .tooltiptext-like,
+  .usermenu-anchor:hover .usermenu-links {
     visibility: visible;
   }
+
+  .usermenu-anchor .usermenu-links {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+
+    a {
+      color: inherit;
+
+      &:hover {
+        color: $color-light-blue;
+      }
+    }
+    
+  }
+
 
 
   .form {

@@ -68,8 +68,16 @@ const actions = {
     fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchString}&key=${state.apiKey}`)
       .then(response => response.json())
       .then(data => {
-        let searchResults = [...data.items];
-        console.log("searchResults from the response: ", searchResults)
+        let responseData = [...data.items];
+        console.log("Data from the response: ", responseData)
+        let searchResults = [];
+        responseData.forEach(responseObject => {
+          let resultObject = {
+            bookId: responseObject.id,
+            details: responseObject.volumeInfo
+          };
+          searchResults.push(resultObject);
+        });
         commit("setSearchResults", searchResults) 
       })
       .catch(error => {

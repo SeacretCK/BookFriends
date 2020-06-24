@@ -2,16 +2,16 @@
   <div class="results-container">
     <h2>Results</h2>
     <hr>
-    <div v-for="book in getSearchResults" :key="book.id" class="books__item" @click="bookDetails(book.id)">
+    <div v-for="book in getSearchResults" :key="book.id" class="books__item" @click="bookDetails(book.bookId)">
       <div class="book__image">
         <img 
-          v-if="book.volumeInfo.imageLinks" 
-          :src="book.volumeInfo.imageLinks.thumbnail || book.volumeInfo.imageLinks.smallThumbnail">
+          v-if="book.details.imageLinks" 
+          :src="book.details.imageLinks.thumbnail || book.details.imageLinks.smallThumbnail">
         <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
       </div>
       <div class="book__info">
-        <h3 class="book__title">  {{ book.volumeInfo.title }} </h3>
-        <p v-if="book.volumeInfo.authors" class="book__author"> {{ book.volumeInfo.authors.toString() }} </p>
+        <h3 class="book__title">  {{ book.details.title }} </h3>
+        <p v-if="book.details.authors" class="book__author"> {{ book.details.authors.toString() }} </p>
       </div>
       <div class="book__addButton">
         <button type="button" class="button" @click="openAddBookModal()">Add to Booklist</button>
@@ -59,7 +59,7 @@ export default {
         clickedBookId: null, 
         clickedBookObject: null
       },
-      defaultBookImage: "",
+      //defaultBookImage: "",
       showAddBookModal: false,
     }
   },
@@ -103,7 +103,7 @@ export default {
       "getDefaultProfilePicture",
     ]),
     clickedBookInfo() {
-      return this.getSearchResults.filter(item => item.id === this.bookModal.clickedBookId)
+      return this.getSearchResults.filter(item => item.bookId === this.bookModal.clickedBookId)
       // returns an array with one object
     },
     
