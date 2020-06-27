@@ -27,7 +27,8 @@ const storage = firebase.storage();
 const usersCollection = db.collection("users");
 const booklistsCollection = db.collection("booklists");
 const postsCollection = db.collection("posts");
-const commentsCollection = db.collection("comments")
+const commentsCollection = db.collection("comments");
+const messagesCollection = db.collection("messages");
 
 export {
   db,
@@ -37,5 +38,6 @@ export {
   usersCollection,
   booklistsCollection,
   postsCollection,
-  commentsCollection
+  commentsCollection,
+  messagesCollection
 };

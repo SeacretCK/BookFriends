@@ -6,11 +6,11 @@
         <UserProfile v-on:close="close()" :userId="profile.userId"></UserProfile>
       </section>
 
-      <section v-if="showSendMessage">
-        <SendMessage v-on:close="close()" :recipientId="message.userId" :recipientName="message.name"></SendMessage>
+      <section v-if="showConversationModal">
+        <ConversationModal v-on:close="close()" :recipientId="conversation.userId" :recipientName="conversation.name"></ConversationModal>
       </section>
 
-      <div v-if="!showSendMessage && !showUserProfile" class="modal__container">
+      <div v-if="!showConversationModal && !showUserProfile" class="modal__container">
         <div class="modal__header">
           <button type="button" class="button button-close" @click="$emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
@@ -24,7 +24,7 @@
                   <a>{{ post.userName }}</a> 
                   <span class="usermenu-links">
                     <a @click="openProfile(post.userId)">View profile</a>
-                    <a @click="openMessage(post.userId, post.userName)">Write a message</a>
+                    <a @click="openConversation(post.userId, post.userName)">Write a message</a>
                   </span>
                 </span> on {{ post.createdOn | formatDate }}</p>
             </div>
@@ -64,7 +64,7 @@
                   <a>{{ comment.userName }}</a> 
                   <span class="usermenu-links">
                     <a @click="openProfile(comment.userId)">View profile</a>
-                    <a @click="openMessage(comment.userId, comment.userName)">Write a message</a>
+                    <a @click="openConversation(comment.userId, comment.userName)">Write a message</a>
                   </span>
                 </span>
                 on {{ comment.createdOn | formatDate }}</p>
@@ -100,14 +100,14 @@ import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
 import { commentsCollection, postsCollection } from "@/firebaseConfig"
 import UserProfile from "@/components/UserProfile.vue"
-import SendMessage from "@/components/SendMessage.vue"
+import ConversationModal from "@/components/ConversationModal.vue"
 
 
 export default {
   name: "ViewPostModal",
   components: {
     UserProfile,
-    SendMessage
+    ConversationModal
   },
   props: [
     "post",
@@ -128,8 +128,8 @@ export default {
       profile: {
         userId: ""
       },
-      showSendMessage: false,
-      message: {
+      showConversationModal: false,
+      conversation: {
         userId: "",
         name: ""
       }
@@ -175,7 +175,7 @@ export default {
           content: this.comment.content,
           postId: postId,
           userId: this.getCurrentUser.uid,
-          userName: this.getUserProfile.name
+          userName: this.getCurrentUserProfile.name
         })
         .then(() => {
           postsCollection
@@ -243,18 +243,17 @@ export default {
       this.showUserProfile = true;
       document.body.classList.add('modal-open');
     },
-    openMessage(userId, userName) {
-      console.log("openMessage", userId);
-      this.message.userId = userId;
-      this.message.name = userName;
-      this.showSendMessage = true;
+    openConversation(userId, userName) {
+      this.conversation.userId = userId;
+      this.conversation.name = userName;
+      this.showConversationModal = true;
       document.body.classList.add('modal-open');
     },
     close() {
-      this.message.userId = "";
-      this.message.name = "";
+      this.conversation.userId = "";
+      this.conversation.name = "";
       this.profile.userId = "";
-      this.showSendMessage = false;
+      this.showConversationModal = false;
       this.showUserProfile = false;
       document.body.classList.remove('modal-open');
     },
@@ -263,7 +262,7 @@ export default {
   computed: {
     ...mapGetters([
       "getCurrentUser",
-      "getUserProfile"
+      "getCurrentUserProfile"
     ]),
     userHasLiked() {
       return this.post.usersThatLiked.includes(this.getCurrentUser.uid)

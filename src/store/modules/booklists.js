@@ -15,8 +15,7 @@ const getters = {
 const actions = {
   createBooklist({ dispatch, rootState }, name) {
     booklistsCollection
-      .doc()
-      .set({
+      .add({
         listName: name,
         userId: rootState.user.currentUser.uid,
         position: "",

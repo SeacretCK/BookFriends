@@ -18,11 +18,11 @@
         <UserProfile v-on:close="close()" :userId="profile.userId"></UserProfile>
       </section>
 
-      <section v-if="showSendMessage">
-        <SendMessage v-on:close="close()" :recipientId="message.userId" :recipientName="message.name"></SendMessage>
+      <section v-if="showConversationModal">
+        <ConversationModal v-on:close="close()" :recipientId="conversation.userId" :recipientName="conversation.name"></ConversationModal>
       </section>
 
-      <div v-if="!showCreatePost && !showFullPost && !showSendMessage && !showUserProfile" class="posts">
+      <div v-if="!showCreatePost && !showFullPost && !showConversationModal && !showUserProfile" class="posts">
         <h1 class="posts-title">Latest Posts</h1>
         <div v-if="getPosts.length" class="posts-item">
           <div v-for="(post, index) in getPosts" class="post" :key="index">
@@ -32,7 +32,7 @@
                 <a>{{ post.userName }}</a> 
                 <span class="usermenu-links">
                   <a @click="openProfile(post.userId)">View profile</a>
-                  <a @click="openMessage(post.userId, post.userName)">Write a message</a>
+                  <a @click="openConversation(post.userId, post.userName)">Write a message</a>
                 </span>
               </span>
             </p>
@@ -68,7 +68,7 @@ import { mapActions, mapGetters } from 'vuex'
 import CreatePostModal from "@/components/CreatePostModal.vue"
 import ViewPostModal from "@/components/ViewPostModal.vue"
 import UserProfile from "@/components/UserProfile.vue"
-import SendMessage from "@/components/SendMessage.vue"
+import ConversationModal from "@/components/ConversationModal.vue"
 import moment from 'moment'
 
 export default {
@@ -77,7 +77,7 @@ export default {
     CreatePostModal,
     ViewPostModal,
     UserProfile,
-    SendMessage
+    ConversationModal
   },
   data() {
     return {
@@ -88,8 +88,8 @@ export default {
       profile: {
         userId: ""
       },
-      showSendMessage: false,
-      message: {
+      showConversationModal: false,
+      conversation: {
         userId: "",
         name: ""
       }
@@ -114,20 +114,20 @@ export default {
       this.showUserProfile = true;
       document.body.classList.add('modal-open');
     },
-    openMessage(userId, userName) {
+    openConversation(userId, userName) {
       console.log("openMessage", userId);
-      this.message.userId = userId;
-      this.message.name = userName;
-      this.showSendMessage = true;
+      this.conversation.userId = userId;
+      this.conversation.name = userName;
+      this.showConversationModal = true;
       document.body.classList.add('modal-open');
     },
     close() {
       this.showCreatePost = false;
       this.showFullPost = false;
-      this.message.userId = "";
-      this.message.name = "";
+      this.conversation.userId = "";
+      this.conversation.name = "";
       this.profile.userId = "";
-      this.showSendMessage = false;
+      this.showConversationModal = false;
       this.showUserProfile = false;
       document.body.classList.remove('modal-open');
     },

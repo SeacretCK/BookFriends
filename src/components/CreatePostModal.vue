@@ -64,7 +64,7 @@ export default {
           title: this.post.title,
           content: this.post.content,
           userId: this.getCurrentUser.uid,
-          userName: this.getUserProfile.name,
+          userName: this.getCurrentUserProfile.name,
           comments: 0,
           likes: 0,
           usersThatLiked: []
@@ -84,7 +84,7 @@ export default {
   computed: {
     ...mapGetters([
       "getCurrentUser",
-      "getUserProfile"
+      "getCurrentUserProfile"
     ])
   }
 }

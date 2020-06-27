@@ -14,14 +14,14 @@ Vue.use(Vuex)
 
 
 // the store gets reset with page reload
-// that's why currentUser and userProfile need to be set again
+// that's why currentUser and currentUserProfile need to be set again
 // an alternative would be local storage, cookie or persistedstate (https://github.com/robinvdvleuten/vuex-persistedstate)
 
 auth.onAuthStateChanged(user => {
   if (user) {
     console.log("check user on page reload")
     store.dispatch("setCurrentUser", user);
-    store.dispatch("setUserProfile");
+    store.dispatch("setCurrentUserProfile");
   }
 });
 

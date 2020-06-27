@@ -146,7 +146,7 @@ export default {
   methods: {
     ...mapActions([
       "setCurrentUser",
-      "setUserProfile"
+      "setCurrentUserProfile"
     ]),
     toggleForm() {
       this.showLoginForm = !this.showLoginForm;
@@ -173,7 +173,7 @@ export default {
               booklists: []
             })
             .then(() => {
-              this.setUserProfile();
+              this.setCurrentUserProfile();
               this.$router.push("/dashboard");
               console.log("user created");
             })
@@ -199,7 +199,7 @@ export default {
         )
         .then(data => {
           this.setCurrentUser(data.user);
-          this.setUserProfile();
+          this.setCurrentUserProfile();
           this.performingRequest = false;
         })
         .catch(err => {

@@ -2,10 +2,7 @@
   <div class="wrapper">
     <section class="section section-user">
       <h1 class="welcome__heading">Welcome to your Dashboard <span class="welcome__user-name">{{ userInfo.name }}</span> !</h1>
-      <hr>
-      <p>Create your own BookLists with content from Google Books API</p>
-      <p>Connect with friends? Send them book recommendations?</p>
-      <hr>
+      
       <div class="user__dashboard">
 
         <div class="user__profile">
@@ -39,20 +36,28 @@
             />
           </form>
         </div>
-        <div class="user__news">
-          <h2 class="news__heading">You have new Messages!</h2>
-          <p>...</p>
-          <p>...</p>
+
+        <div class="user__conversations">
+          <h2 class="conversations__heading">Your conversations</h2>
+          <div v-for="user in getConversations" :key="user.id">
+            <div class="conversations__item" tabindex="0" @click="openConversation(user.id, user.name)">
+              <img :src="user.image || defaultProfilePicture" alt="profile picture" class="conversations__profile-picture">
+              <p>{{ user.name }}</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
+    <section class="section" v-if="conversationModal.showConversationModal">
+      <ConversationModal v-on:close="close" :recipientId="conversationModal.userId" :recipientName="conversationModal.userName"></ConversationModal>
+    </section>
 
-    <section class="section section-bookInfoModal" v-if="bookModal.showBookInfoModal">
+    <section class="section" v-if="bookModal.showBookInfoModal">
       <BookInfoModal v-on:close="close" :bookInfo="bookModal.clickedBookObject"></BookInfoModal>
     </section>
 
-    <section class="section section-booklistModal" v-if="listModal.showBooklistModal">
+    <section class="section" v-if="listModal.showBooklistModal">
       <BooklistModal v-on:close="close" :booklistId="listModal.clickedBooklistId"></BooklistModal>
     </section>
 
@@ -75,13 +80,16 @@
 import { mapGetters, mapActions } from 'vuex'
 import BookInfoModal from "@/components/BookInfoModal.vue";
 import BooklistModal from "@/components/BooklistModal.vue";
+import ConversationModal from "@/components/ConversationModal.vue";
+//import { usersCollection } from "@/firebaseConfig"
 
 
 export default {
   name: "Dashboard",
   components: {
     BookInfoModal,
-    BooklistModal
+    BooklistModal,
+    ConversationModal
   },
   data() {
     return {
@@ -95,12 +103,19 @@ export default {
         clickedBooklistId: null,
       },
       newListName: "",
-      newListNameAlert: ""
+      newListNameAlert: "",
+      conversationModal: {
+        showConversationModal: false,
+        userId: "",
+        userName: ""
+      }
     }
   },
   created() {
     this.setMostDiscussedBooks();
     this.setBooklists();
+    this.setAllMessages();
+    this.realtimeUpdateMessages();
   },
   methods: {
     ...mapActions([
@@ -108,7 +123,10 @@ export default {
       "createBooklist",
       "setBooklists",
       "setBooksInBooklist",
-      "deleteBooklist"
+      "deleteBooklist",
+      "setAllMessages",
+      "setUserConversation",
+      "realtimeUpdateMessages"
     ]),
     bookDetails(number) {
       this.bookModal.showBookInfoModal = true;
@@ -122,6 +140,12 @@ export default {
       this.setBooksInBooklist(this.listModal.clickedBooklistId)
       document.body.classList.add('modal-open');
     },
+    openConversation(userId, userName) {
+      this.conversationModal.userId = userId;
+      this.conversationModal.userName = userName;
+      this.conversationModal.showConversationModal = true;
+      document.body.classList.add('modal-open');
+    },
     close() {
       this.bookModal.showBookInfoModal = false;
       this.bookModal.clickedBookNumber = null;
@@ -129,6 +153,8 @@ export default {
       this.listModal.showBooklistModal = false;
       this.listModal.clickedBooklist = null;
       this.listModal.clickedBooklistObject = null;
+      this.conversationModal.userId = "";
+      this.conversationModal.showConversationModal = false;
       document.body.classList.remove('modal-open');
     },
     createNewList() {
@@ -145,17 +171,19 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "getUserProfile",
+      "getCurrentUserProfile",
       "getMostDiscussedBooks",
       "getDefaultProfilePicture",
-      "getBooklists"
+      "getBooklists",
+      "getConversations"
     ]),
     userInfo() {
-      return this.getUserProfile
+      return this.getCurrentUserProfile
     },
     defaultProfilePicture() {
       return this.getDefaultProfilePicture
     },
+    
 
     // MOST DISCUSSED BOOKS
 
@@ -175,7 +203,12 @@ export default {
     },
     checkIfListNameAlreadyExists() {
       return this.getBooklists.some(item => item.listName === this.newListName)
-    }
+    },
+
+
+    // MESSAGES
+
+    
   }
 }
 </script>
@@ -204,7 +237,8 @@ export default {
   grid-auto-rows: minmax(100px, auto);
   grid-template-areas: 
     "main main main main main main main. sidebar sidebar sidebar sidebar"
-    "news news news news news news news. sidebar sidebar sidebar sidebar";
+    "conversations conversations conversations conversations conversations conversations conversations. sidebar2 sidebar2 sidebar2 sidebar2";
+  row-gap: 2rem;
 }
 
 .user__profile {
@@ -228,23 +262,54 @@ export default {
   padding-top: 1em;
 }
 
-// NEWS
+// CONVERSATIONS
 
-.user__news {
-  grid-area: news;
+.user__conversations {
+  grid-area: conversations;
   text-align: left;
+  @include set-background($color-dark-blue);
+  border-radius: 10px;
+  overflow: hidden; // this lets the corners of the children be clipped to the border-radius
+  border: 1px solid $color-dark-grey;
+  align-self: flex-start;
 }
 
-.news__heading {
+.conversations__heading {
   font-size: 1.7rem;
-  margin-bottom: 0.5em;
+  padding: 0.5rem;
+  border-bottom: 1px solid $color-dark-grey;
+  text-align: center;
 }
 
+.conversations__item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid $color-dark-grey;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  
+  &:hover,
+  &:focus {
+    background-color: lighten($color-dark-blue, 10%);
+    outline: none;
+  }
+}
+
+.conversations__profile-picture {
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 1px solid $color-light-blue;
+  margin-right: 1rem;
+}
 
 // BOOKLISTS
 
 .user__booklists {
-  grid-area: sidebar;
+  grid-area: sidebar2;
   @include set-background($color-dark-blue);
   border-radius: 10px;
   overflow: hidden; // this lets the corners of the children be clipped to the border-radius
@@ -305,7 +370,6 @@ export default {
 
 // OTHER SECTIONS
 
-.news__heading,
 .books__heading {
   font-size: 1.7rem;
   margin-bottom: 0.5em;

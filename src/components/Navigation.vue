@@ -60,14 +60,14 @@ export default {
   computed: {
     ...mapGetters([
       "getCurrentUser",
-      "getUserProfile",
+      "getCurrentUserProfile",
       "getDefaultProfilePicture"
     ]),
     currentUser() {
       return this.getCurrentUser
     },
     userInfo() {
-      return this.getUserProfile
+      return this.getCurrentUserProfile
     },
     defaultProfilePicture() {
       return this.getDefaultProfilePicture
