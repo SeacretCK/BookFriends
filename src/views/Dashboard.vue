@@ -39,10 +39,10 @@
 
         <div class="user__conversations">
           <h2 class="conversations__heading">Your conversations</h2>
-          <div v-for="user in getConversations" :key="user.id">
-            <div class="conversations__item" tabindex="0" @click="openConversation(user.id, user.name)">
-              <img :src="user.image || defaultProfilePicture" alt="profile picture" class="conversations__profile-picture">
-              <p>{{ user.name }}</p>
+          <div v-for="user in getConversations" :key="user.userId">
+            <div class="conversations__item" tabindex="0" @click="openConversation(user.userId, user.userName)">
+              <img :src="user.userImage || defaultProfilePicture" alt="profile picture" class="conversations__profile-picture">
+              <p>{{ user.userName }} <span class="conversations__badge" v-if="user.unreadMessagesFromUser > 0">New messages: {{ user.unreadMessagesFromUser }}</span></p> 
             </div>
           </div>
         </div>
@@ -175,7 +175,9 @@ export default {
       "getMostDiscussedBooks",
       "getDefaultProfilePicture",
       "getBooklists",
-      "getConversations"
+      "getConversations",
+      "getAllMessages",
+      "getRealtimeUpdateMessages"
     ]),
     userInfo() {
       return this.getCurrentUserProfile
@@ -188,7 +190,6 @@ export default {
     // MOST DISCUSSED BOOKS
 
     mostDiscussedBooksSorted() {
-      console.log("mostDiscussedBooksSorted: ", this.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number))
       return this.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original Array (like sort would)
     },
     clickedBookInfo() {
@@ -209,7 +210,14 @@ export default {
     // MESSAGES
 
     
-  }
+    
+  },
+  watch: {
+    getRealtimeUpdateMessages() {
+      console.log("watcher of realtime updates")
+      this.setAllMessages();
+    }
+  },
 }
 </script>
 
@@ -304,6 +312,16 @@ export default {
   border-radius: 20px;
   border: 1px solid $color-light-blue;
   margin-right: 1rem;
+}
+
+.conversations__badge {
+  min-width: 1em;
+  height: auto;
+  padding: 0.3em;
+  margin-left: 1em;
+  border-radius: 5px;
+  background-color: $color-red;
+  text-align: center;
 }
 
 // BOOKLISTS

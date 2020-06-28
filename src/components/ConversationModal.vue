@@ -5,12 +5,12 @@
         <div class="modal__header">
           <button type="button" class="button button-close" @click="close"><font-awesome-icon icon="times"/></button>
         </div>
-        <div class="modal__content">
+        <div class="modal__content" id="scrollDiv">
           <h1 class="modal__content-heading">Your conversation with {{ recipientName }} </h1>
 
           <section class="conversation">
             <div class="conversation__item"
-            v-for="message in getUserConversation" :key=message.id>
+            v-for="message in userConversation" :key=message.id>
               <div class="message" :class="{'senderIsUser' : message.senderId === getCurrentUser.uid}">
                 <div class="message__timestamp">
                   <p>{{message.timestamp | formatDate }}</p>
@@ -19,7 +19,7 @@
                 <div class="message__content" :class="{'senderIsUser' : message.senderId === getCurrentUser.uid}">
                   <img 
                     v-if="message.senderId !== getCurrentUser.uid"
-                    :src="userImage || defaultProfilePicture" 
+                    :src="getUserImage || defaultProfilePicture" 
                     alt="profile picture" 
                     class="message__profile-picture">
                   <img 
@@ -71,18 +71,29 @@ export default {
       message: {
         content: ""
       },
-      userImage: this.getUserImage
+      //userImage: this.getUserImage
     }
   },
   created() {
     this.setUserConversation(this.recipientId);
+    
   },
+  mounted() {
+    this.scrollBottom();
+  },
+
   methods: {
     ...mapActions([
       "setUserConversation",
       "clearUserConversation",
       "setAllMessages",
     ]),
+    scrollBottom() {
+      console.log("scroll bottom")
+      // let element = document.getElementById('modal-wrapper');
+      // element.scrollTop = element.scrollHeight;
+      document.getElementById('scrollDiv').scrollIntoView({ behavior: 'smooth', block: 'end' });
+    },
     sendMessage() {
       console.log("send ", this.message.content)
       messagesCollection
@@ -124,10 +135,30 @@ export default {
       "getRealtimeUpdateMessages"
     ]),
     getUserImage() { 
-      return this.getConversations.find(user => user.id === this.recipientId).image
+      return this.getConversations.find(user => user.userId === this.recipientId).userImage
     },
     defaultProfilePicture() {
       return this.getDefaultProfilePicture
+    },
+    userConversation() {
+      let displayedMessages = this.getUserConversation;
+      displayedMessages.forEach(message => {
+        if (message.recipientId === this.getCurrentUser.uid && message.read === false) {
+          messagesCollection
+          .doc(message.id)
+          .update({
+            read: true
+          })
+          .then(() => {
+            console.log("message set to read", message.id)
+          })
+          .catch(err => {
+            console.log(err)
+          });
+        }
+      })
+
+      return this.getUserConversation
     }
   
   },

@@ -19,6 +19,7 @@ const getters = {
   getCurrentUserProfile: state => state.currentUserProfile,
   getDefaultProfilePicture: state => state.defaultProfilePicture,
   getShowSuccess: state => state.showSuccess,
+  getAllMessages: state => state.allMessages,
   getConversations: state => state.conversationsWithUsers,
   getUserConversation: state => state.userConversation,
   getRealtimeUpdateMessages: state => state.newIncomingMessages
@@ -107,6 +108,7 @@ const actions = {
           })
           console.log("fetched messages complete", messagesArray)
           commit("setAllMessages", messagesArray);
+          console.log("dispatching setConversations")
           dispatch("setConversations");
         })
         .catch(err => {
@@ -156,33 +158,61 @@ const actions = {
     console.log("setting conversations")
     let differentUsers = [];
     let allMessagesArray = state.allMessages;
+
+    // setting different users
     allMessagesArray.forEach(message => {
       if (message.senderId !== state.currentUser.uid) {
         if (differentUsers.indexOf(message.senderId) === -1 )  {
           differentUsers.push(message.senderId)
         }
       }
-    })
+    });
+
+    console.log("differentUsers: ", differentUsers)
 
     let userObjects = []
     differentUsers.forEach(userId => {
+      let userObject = {
+        userName: "",
+        userId: userId,
+        userImage: "",
+        unreadMessagesFromUser: 0
+      }
+      userObjects.push(userObject);
+    })
+
+    console.log("userObjects: ", userObjects)
+
+    // setting unread messages
+    allMessagesArray.forEach(message => {
+      if (message.recipientId === state.currentUser.uid && message.read === false) {
+        console.log("checking for unread messages")
+        userObjects.forEach(user => {
+          if (user.userId === message.senderId) {
+            console.log("unread message +1")
+            user.unreadMessagesFromUser++;
+          }
+        })
+      }
+    })
+
+    // completing user information
+        
+    userObjects.forEach(user => {
       usersCollection
-      .doc(userId)
+      .doc(user.userId)
       .get()
       .then(res => {
-        console.log(res.data())
-        let userObject = {
-          name: res.data().name,
-          id: userId,
-          image: res.data().image
-        }
-        userObjects.push(userObject);
+        console.log("getting user information ", res.data())
+        user.userName = res.data().name;
+        user.userImage = res.data().image;
       })
       .catch(err => {
         console.log(err);
       });
     })
-    console.log("conversations: ", userObjects);
+
+    console.log("userObjects to commit setConversations", userObjects)
     commit("setConversations", userObjects)
   },
   setUserConversation({ commit, state }, userId ) {
