@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import mostDiscussedBooks from "./modules/mostDiscussedBooks"
 import user from "./modules/user"
 import booklists from "./modules/booklists"
 import search from "./modules/search"
@@ -35,7 +34,6 @@ export const store = new Vuex.Store({
   getters: {
   },
   modules: {
-    mostDiscussedBooks,
     user,
     booklists,
     search,

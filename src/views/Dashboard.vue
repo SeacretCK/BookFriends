@@ -53,32 +53,15 @@
       <ConversationModal v-on:close="close" :recipientId="conversationModal.userId" :recipientName="conversationModal.userName"></ConversationModal>
     </section>
 
-    <section class="section" v-if="bookModal.showBookInfoModal">
-      <BookInfoModal v-on:close="close" :bookInfo="bookModal.clickedBookObject"></BookInfoModal>
-    </section>
-
     <section class="section" v-if="listModal.showBooklistModal">
       <BooklistModal v-on:close="close" :booklistId="listModal.clickedBooklistId"></BooklistModal>
     </section>
 
-    <section class="section section-books">
-      <h2 class="books__heading">Most discussed books this week</h2>
-      <div class="books__container">
-        <div v-for="book in mostDiscussedBooksSorted" :key="book.id" class="books__item" @click="bookDetails(book.number)">
-          <h3 class="book__title">  {{ book.details.title }} </h3>
-          <p class="book__author"> {{ book.details.authors.toString() }} </p>
-          <div class="book__image">
-            <img :src="book.details.imageLinks.thumbnail">
-          </div>
-        </div>
-      </div>
-    </section>   
   </div>  
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import BookInfoModal from "@/components/BookInfoModal.vue";
 import BooklistModal from "@/components/BooklistModal.vue";
 import ConversationModal from "@/components/ConversationModal.vue";
 //import { usersCollection } from "@/firebaseConfig"
@@ -87,17 +70,11 @@ import ConversationModal from "@/components/ConversationModal.vue";
 export default {
   name: "Dashboard",
   components: {
-    BookInfoModal,
     BooklistModal,
     ConversationModal
   },
   data() {
     return {
-      bookModal: {
-        showBookInfoModal: false,
-        clickedBookNumber: null,
-        clickedBookObject: null
-      },
       listModal: {
         showBooklistModal: false,
         clickedBooklistId: null,
@@ -112,7 +89,6 @@ export default {
     }
   },
   created() {
-    this.setMostDiscussedBooks();
     this.setBooklists();
     this.setAllMessages();
     this.realtimeUpdateMessages();
@@ -128,12 +104,7 @@ export default {
       "setUserConversation",
       "realtimeUpdateMessages"
     ]),
-    bookDetails(number) {
-      this.bookModal.showBookInfoModal = true;
-      this.bookModal.clickedBookNumber = number;
-      this.bookModal.clickedBookObject = this.clickedBookInfo[0];
-      document.body.classList.add('modal-open');
-    },
+  
     showBooklist(id) {
       this.listModal.showBooklistModal = true;
       this.listModal.clickedBooklistId = id;
@@ -147,9 +118,6 @@ export default {
       document.body.classList.add('modal-open');
     },
     close() {
-      this.bookModal.showBookInfoModal = false;
-      this.bookModal.clickedBookNumber = null;
-      this.bookModal.clickedBookObject = null;
       this.listModal.showBooklistModal = false;
       this.listModal.clickedBooklist = null;
       this.listModal.clickedBooklistObject = null;
@@ -172,7 +140,6 @@ export default {
   computed: {
     ...mapGetters([
       "getCurrentUserProfile",
-      "getMostDiscussedBooks",
       "getDefaultProfilePicture",
       "getBooklists",
       "getConversations",
@@ -187,16 +154,6 @@ export default {
     },
     
 
-    // MOST DISCUSSED BOOKS
-
-    mostDiscussedBooksSorted() {
-      return this.getMostDiscussedBooks.slice(0).sort((a, b) => a.number - b.number); // slice makes it a copy instead of mutating the original Array (like sort would)
-    },
-    clickedBookInfo() {
-      return this.mostDiscussedBooksSorted.filter(item => item.number === this.bookModal.clickedBookNumber)
-      // returns an array with one object
-    },
-
     // BOOKLISTS
 
     booklists() {
@@ -205,11 +162,7 @@ export default {
     checkIfListNameAlreadyExists() {
       return this.getBooklists.some(item => item.listName === this.newListName)
     },
-
-
-    // MESSAGES
-
-    
+  
     
   },
   watch: {
@@ -384,42 +337,6 @@ export default {
   border: 1px solid $color-dark-grey;
   width: 50%;
   padding-left: 5px;
-}
-
-// OTHER SECTIONS
-
-.books__heading {
-  font-size: 1.7rem;
-  margin-bottom: 0.5em;
-}
-
-.books__container {
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-}
-
-.books__item {
-  width: 30%;
-  border: 1px solid $color-dark-grey;
-  padding: 5px;
-  text-align: center;
-  border-radius: 5px;
-  @include set-background($color-light-grey);
-}
-
-.book__image {
-  padding: 10px;
-}
-
-.book__title,
-.book__author {
-  margin-bottom: 0.5em;
-}
-
-.book__title {
-  font-size: 1.5rem;
-  margin-top: 0.5em;
 }
 
 </style>
