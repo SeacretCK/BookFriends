@@ -9,11 +9,13 @@
         <div class="modal__content">
           <div class="modal__book-info">
             <h2 class="modal__book-title">  {{ bookInfo.details.title | trimLength}} </h2>
-            <img v-if="bookInfo.details.imageLinks" :src="bookInfo.details.imageLinks.thumbnail || bookInfo.details.imageLinks.smallThumbnail">
-            <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
+            <div class="book__image-box">
+              <img class="book__image" v-if="bookInfo.details.imageLinks" :src="bookInfo.details.imageLinks.thumbnail || bookInfo.details.imageLinks.smallThumbnail">
+              <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
+            </div>
           </div>  
           <div class="modal__list-infos">
-            <h2>Select one of your lists</h2>  
+            <h2 class="info-heading">Select one of your lists</h2>  
             <p class="alert" v-show="addBookAlert"> {{ addBookAlert }} </p>
             <form class="form" @submit.prevent>
               <div class="form__input">
@@ -175,6 +177,19 @@ export default {
     text-align: center;
   }
 
+  .book__image-box {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .book__image {
+    width: 100%;
+    height: auto;
+    object-fit: contain
+  }
+
   .book__default-icon {
     width: 90%;
     height: auto;
@@ -183,11 +198,17 @@ export default {
   }
 
   .modal__book-title {
+    font-size: 1.1rem;
     margin-bottom: 10px;
+    word-wrap: break-word;
   }
 
   .modal__list-infos {
     width: 60%;
+  }
+
+  .info-heading {
+    font-size: 1.2rem;
   }
 
   .select-list {
@@ -252,6 +273,17 @@ export default {
     padding: 1em;
     font-weight: 700;
     color: $color-red;
+  }
+
+
+  @media only screen and (min-width: 550px) {
+    .info-heading {
+      font-size: 1.4rem;
+    }
+    .modal__book-title {
+      font-size: 1.3rem;
+    }
+
   }
 </style>
 

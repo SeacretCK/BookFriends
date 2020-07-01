@@ -1,13 +1,11 @@
 <template>
   <div class="card__container"> 
 
-    <div class="card__imageBox">
-      <div>
+    <div class="card__image-box">
         <img class="book__image"
           v-if="book.details.imageLinks" 
           :src="book.details.imageLinks.thumbnail || book.details.imageLinks.smallThumbnail">
         <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
-      </div>
     </div>  
 
     <div class="card__infos">
@@ -89,7 +87,7 @@ export default {
     justify-content: space-around;
   }
 
-  .card__imageBox {
+  .card__image-box {
     width: 20%;
     min-width: 75px;
     padding: 10px;
