@@ -8,7 +8,7 @@
         
         <div class="modal__content">
           <div class="modal__book-info">
-            <h2 class="modal__book-title">  {{ bookInfo.details.title }} </h2>
+            <h2 class="modal__book-title">  {{ bookInfo.details.title | trimLength}} </h2>
             <img v-if="bookInfo.details.imageLinks" :src="bookInfo.details.imageLinks.thumbnail || bookInfo.details.imageLinks.smallThumbnail">
             <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
           </div>  
@@ -144,6 +144,15 @@ export default {
       console.log("selected list object: ", this.properties.selectedList)
       console.log("checkIfBookIsAlreadyInTheList", this.properties.selectedList.books.some(item => item.bookId === this.bookInfo.bookId))
       return this.properties.selectedList.books.some(item => item.bookId === this.bookInfo.bookId)
+    }
+  },
+
+  filters: {
+    trimLength(val) {
+      if (val.length < 30) {
+        return val;
+      }
+      return `${val.substring(0, 30)}...`;
     }
   }
 }

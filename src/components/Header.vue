@@ -42,13 +42,20 @@ export default {
 }
 
 .header__logo {
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 900;
   color: $color-light-blue;
   text-decoration: none;
 
   &:hover {
     color: $color-light-blue; // overrides the hover effect for links in typography.scss
+  }
+}
+
+
+@media only screen and (min-width: 550px) {
+  .header__logo {
+    font-size: 3rem;
   }
 }
 

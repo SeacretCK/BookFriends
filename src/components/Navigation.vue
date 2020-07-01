@@ -113,7 +113,9 @@ export default {
   justify-content: center;
   background-color: $color-light-blue;
   color: $color-dark-grey;
-  margin-left: 20px;
+  margin-left: 0.3em;
+  min-width: 100px;
+  width: 100px;
 }
 
 .navigation__dropdown {
@@ -197,4 +199,11 @@ export default {
   opacity: 0.6;
 }
 
+
+@media only screen and (min-width: 550px) {
+  .button-menu {
+    min-width: 150px;
+    margin-left: 20px;
+  }
+}
 </style>

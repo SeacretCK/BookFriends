@@ -124,7 +124,10 @@ export default {
   }
 
   .book__image {
-    width: 10%;
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     img {
       width: 100%;
@@ -151,10 +154,16 @@ export default {
 
   .book__title {
     text-align: left;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .book__author {
+    font-size: 0.9rem;
   }
 
   .book__addButton {
-    width: 15%;
+    width: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -167,4 +176,20 @@ export default {
     }
   }
 
+
+  @media only screen and (min-width: 600px) {
+    .book__title {
+      text-align: left;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .book__author {
+      font-size: 1rem;
+    }
+
+    .book__addButton {
+      width: 20%;
+    }
+  }
 </style>

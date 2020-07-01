@@ -135,6 +135,9 @@ export default {
       "getRealtimeUpdateMessages"
     ]),
     getUserImage() { 
+      console.log("getUserImage: ", this.getConversations);
+      console.log("userImage: ", this.getConversations.find(user => user.userId === this.recipientId).userImage);
+      console.log("recipientId: ", this.recipientId);
       return this.getConversations.find(user => user.userId === this.recipientId).userImage
     },
     defaultProfilePicture() {

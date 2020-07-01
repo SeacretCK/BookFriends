@@ -12,7 +12,6 @@
             <font-awesome-icon class="book__default-icon" icon="book-open" v-else/>
             <div class="modal__buttons">
               <button type="button" class="button" @click="openAddBookModal()">Add to Booklist</button>
-              <button type="button" class="button" disabled>Read Discussions</button>
             </div>
           </div>  
           <div class="modal__content-infos">
@@ -113,9 +112,15 @@ export default {
   }
 
   .modal__content-image {
-    width: 30%;
+    width: 120px;
     padding: 10px;
     text-align: center;
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: contain
+    }
   }
   
   .book__default-icon {
@@ -130,6 +135,7 @@ export default {
 
     .button {
       margin: 5px 0;
+      min-width: 100px;
     }
   }
 
@@ -137,7 +143,6 @@ export default {
     width: 65%;
     padding: 10px;
     text-align: left;
-    
   }
 
   .modal__book-author {
@@ -147,6 +152,17 @@ export default {
   .modal__book-year {
     font-style: italic;
     padding-bottom: 1em;
+  }
+
+  @media only screen and (min-width: 500px) {
+    .modal__content-image {
+      width: 30%;
+    }
+
+    .modal__book-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
   }
 
 </style>

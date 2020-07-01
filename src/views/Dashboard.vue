@@ -192,20 +192,11 @@ export default {
 
 // USER SECTION
 
-.user__dashboard {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: minmax(100px, auto);
-  grid-template-areas: 
-    "main main main main main main main. sidebar sidebar sidebar sidebar"
-    "conversations conversations conversations conversations conversations conversations conversations. sidebar2 sidebar2 sidebar2 sidebar2";
-  row-gap: 2rem;
-}
-
 .user__profile {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   grid-area: main;
+  margin-bottom: 1rem;
 }
 
 .profile-picture {
@@ -233,6 +224,8 @@ export default {
   overflow: hidden; // this lets the corners of the children be clipped to the border-radius
   border: 1px solid $color-dark-grey;
   align-self: flex-start;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .conversations__heading {
@@ -286,6 +279,9 @@ export default {
   overflow: hidden; // this lets the corners of the children be clipped to the border-radius
   border: 1px solid $color-dark-grey;
   align-self: flex-start;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  max-width: 400PX;
 }
 
 .booklist__heading {
@@ -337,6 +333,28 @@ export default {
   border: 1px solid $color-dark-grey;
   width: 50%;
   padding-left: 5px;
+}
+
+
+@media only screen and (min-width: 900px) {
+  .user__dashboard {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+    grid-template-areas: 
+      "main main main main main main main. sidebar sidebar sidebar sidebar"
+      "conversations conversations conversations conversations conversations conversations conversations. sidebar2 sidebar2 sidebar2 sidebar2";
+    row-gap: 2rem;
+  }
+ 
+  .user__booklists, 
+  .user__conversations {
+    margin: 0;
+  }
+
+  .user__profile {
+    justify-content: flex-start;
+  }
 }
 
 </style>
