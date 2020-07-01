@@ -1,7 +1,7 @@
 <template>
   <nav class="navigation" v-show="currentUser">
     <div class="navigation__user-picture">
-      <router-link to="dashboard"><img :src="selectImage" alt="profile picture" class="profile-picture"></router-link>
+      <router-link to="dashboard" class="profile-picture-container"><img :src="selectImage" alt="profile picture" class="profile-picture"></router-link>
     </div>
     <div class="navigation__name">
       <transition name="slide-fade">
@@ -95,6 +95,12 @@ export default {
 }
 
 .navigation__user-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-picture-container {
   display: flex;
   justify-content: center;
   align-items: center;
