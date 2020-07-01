@@ -166,6 +166,12 @@ const actions = {
           differentUsers.push(message.senderId)
         }
       }
+      // first message to a user with no reply yet
+      if (message.senderId === state.currentUser.uid) {
+        if (differentUsers.indexOf(message.recipientId) === -1 )  {
+          differentUsers.push(message.recipientId)
+        }
+      }
     });
 
     console.log("differentUsers: ", differentUsers)
