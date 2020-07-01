@@ -24,7 +24,7 @@ import { mapGetters, mapActions } from 'vuex'
 import UserBooklistItem from "./UserBooklistItem.vue"
 
 export default {
-  name: "BooklistModal",
+  name: "UserBooklistModal",
   components: {
     UserBooklistItem
   },

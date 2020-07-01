@@ -1,7 +1,7 @@
 <template>
   <div class="card__container"> 
 
-    <div class="card__imageBox draggable-handle">
+    <div class="card__imageBox">
       <div>
         <img class="book__image"
           v-if="book.details.imageLinks" 
@@ -44,7 +44,7 @@ import BookInfoModal from "@/components/BookInfoModal.vue";
 import AddBookModal from "@/components/AddBookModal.vue";
 
 export default {
-  name: "BooklistItem",
+  name: "UserBooklistItem",
   components: {
     BookInfoModal,
     AddBookModal
@@ -90,12 +90,18 @@ export default {
   }
 
   .card__imageBox {
+    width: 20%;
+    min-width: 75px;
     padding: 10px;
-    text-align: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .book__image {
-    height: 150px;
+    width: 100%;
+    height: auto;
+    object-fit: contain
   }
 
   .book__default-icon {
@@ -106,7 +112,7 @@ export default {
   }
 
   .card__infos {
-    width: 60%;
+    width: 50%;
     padding: 10px;
     text-align: left;
   }
@@ -132,12 +138,15 @@ export default {
   }
 
   .book__buttons {
+    width: 30%;
     display: flex;
     flex-direction: column;
 
     .button {
       padding: 0.5em 1em;
-      margin-top: 10px;;
+      margin-top: 10px;
+      min-width: 100px;
+      width: 100px;
     }
   }
 
