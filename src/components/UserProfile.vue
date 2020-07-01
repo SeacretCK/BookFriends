@@ -81,12 +81,10 @@ export default {
     showBooklist(id) {
       this.booklistId = id;
       this.showUserBooklistModal = true;
-      document.body.classList.add('modal-open');
     },
     close() {
       this.booklistId = "";
       this.showUserBooklistModal = false;
-      document.body.classList.remove('modal-open');
     }
   },
   computed: {

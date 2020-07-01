@@ -51,8 +51,10 @@ router.beforeEach((to, from, next) => {
   if (requiresAuth && !currentUser) {
     next("/");
   } else {
+    // in case a model didn't get closed properly, the class has to be removed
+    document.body.classList.remove('modal-open');
     next();
   }
 })
-4
+
 export default router
