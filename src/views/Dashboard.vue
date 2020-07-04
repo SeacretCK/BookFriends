@@ -16,6 +16,9 @@
 
         <div class="user__booklists">
           <h2 class="booklist__heading">Your booklists</h2>
+          <div v-if="!booklists.length" class="booklist__item no_item">
+            <p>No lists</p>
+          </div>
           <div v-for="list in booklists" :key="list.listId">
             <div class="booklist__item" tabindex="0">
               <div class="booklist__name" @click="showBooklist(list.listId)">
@@ -255,6 +258,7 @@ export default {
 
   &.no_item {
     cursor: default;
+    font-weight: normal;
 
     &:hover,
     &:focus {
@@ -315,6 +319,16 @@ export default {
   &:focus {
     background-color: lighten($color-dark-blue, 10%);
     outline: none;
+  }
+
+  &.no_item {
+    cursor: default;
+
+    &:hover,
+    &:focus {
+      background-color: inherit;
+      outline: none;
+    }
   }
 }
 
