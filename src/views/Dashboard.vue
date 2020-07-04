@@ -39,6 +39,9 @@
 
         <div class="user__conversations">
           <h2 class="conversations__heading">Your conversations</h2>
+          <div v-if="!getConversations.length" class="conversations__item no_item">
+            <p>No conversations</p>
+          </div>
           <div v-for="user in getConversations" :key="user.userId">
             <div class="conversations__item" tabindex="0" @click="openConversation(user.userId, user.userName)">
               <img :src="user.userImage || defaultProfilePicture" alt="profile picture" class="conversations__profile-picture">
@@ -248,6 +251,16 @@ export default {
   &:focus {
     background-color: lighten($color-dark-blue, 10%);
     outline: none;
+  }
+
+  &.no_item {
+    cursor: default;
+
+    &:hover,
+    &:focus {
+      background-color: inherit;
+      outline: none;
+    }
   }
 }
 
