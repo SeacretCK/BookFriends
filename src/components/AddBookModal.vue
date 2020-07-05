@@ -217,7 +217,7 @@ export default {
     margin-bottom: 10px;
     border-radius: 3px;
     border: 1px solid $color-dark-grey;
-    }
+  }
 
   .new-booklist__container {
     margin-top: 10px;
