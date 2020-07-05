@@ -14,12 +14,26 @@
           </div>
         </div>
 
+        <form @submit.prevent class="search-user__form">
+          <h2 class="search-user__heading">Search for a user</h2>
+          <v-select class="select-list" @search="query => search = query" v-model="selectedUser" :options="sortedUsers" label="userName" placeholder="Enter a name">
+            <template v-slot:no-options="{ search, searching }">
+              <template v-if="searching">
+                Sorry, no results found for <em>{{ search }}</em>.
+              </template>
+            </template> 
+          </v-select> <!-- https://vue-select.org/ -->
+          <div class="search-user__result" v-if=selectedUser>
+            <p class="search-user__options"><a class="search-user__link" @click="openConversation(selectedUser.userId, selectedUser.userName)">Write a message</a> or <a class="search-user__link" @click="openProfile(selectedUser.userId)">go to profile</a></p>
+          </div>
+        </form>
+
         <div class="user__booklists">
           <h2 class="booklist__heading">Your booklists</h2>
-          <div v-if="!booklists.length" class="booklist__item no_item">
+          <div v-if="!getBooklists.length" class="booklist__item no_item">
             <p>No lists</p>
           </div>
-          <div v-for="list in booklists" :key="list.listId">
+          <div v-for="list in sortedBooklists" :key="list.listId">
             <div class="booklist__item" tabindex="0">
               <div class="booklist__name" @click="showBooklist(list.listId)">
                 <p> {{list.listName}} </p>
@@ -45,7 +59,7 @@
           <div v-if="!getConversations.length" class="conversations__item no_item">
             <p>No conversations</p>
           </div>
-          <div v-for="user in getConversations" :key="user.userId">
+          <div v-for="user in sortedConversations" :key="user.userId">
             <div class="conversations__item" tabindex="0" @click="openConversation(user.userId, user.userName)">
               <img :src="user.userImage || defaultProfilePicture" alt="profile picture" class="conversations__profile-picture">
               <p>{{ user.userName }} <span class="conversations__badge" v-if="user.unreadMessagesFromUser > 0">New messages: {{ user.unreadMessagesFromUser }}</span></p> 
@@ -59,6 +73,10 @@
       <ConversationModal v-on:close="close" :recipientId="conversationModal.userId" :recipientName="conversationModal.userName"></ConversationModal>
     </section>
 
+    <section v-if="profile.showUserProfile">
+      <UserProfile v-on:close="close" :userId="profile.userId"></UserProfile>
+    </section>
+
     <section class="section" v-if="listModal.showBooklistModal">
       <BooklistModal v-on:close="close" :booklistId="listModal.clickedBooklistId"></BooklistModal>
     </section>
@@ -70,6 +88,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import BooklistModal from "@/components/BooklistModal.vue";
 import ConversationModal from "@/components/ConversationModal.vue";
+import UserProfile from "@/components/UserProfile.vue"
 //import { usersCollection } from "@/firebaseConfig"
 
 
@@ -77,7 +96,8 @@ export default {
   name: "Dashboard",
   components: {
     BooklistModal,
-    ConversationModal
+    ConversationModal,
+    UserProfile
   },
   data() {
     return {
@@ -91,6 +111,12 @@ export default {
         showConversationModal: false,
         userId: "",
         userName: ""
+      },
+      search: "",
+      selectedUser: "",
+      profile: {
+        userId: "",
+        showUserProfile: false
       }
     }
   },
@@ -98,6 +124,7 @@ export default {
     this.setBooklists();
     this.setAllMessages();
     this.realtimeUpdateMessages();
+    this.setAllUsers();
   },
   methods: {
     ...mapActions([
@@ -108,7 +135,8 @@ export default {
       "deleteBooklist",
       "setAllMessages",
       "setUserConversation",
-      "realtimeUpdateMessages"
+      "realtimeUpdateMessages",
+      "setAllUsers"
     ]),
   
     showBooklist(id) {
@@ -123,10 +151,19 @@ export default {
       this.conversationModal.showConversationModal = true;
       document.body.classList.add('modal-open');
     },
+    openProfile(userId) {
+      console.log("openProfile", userId);
+      this.profile.userId = userId;
+      this.profile.showUserProfile = true;
+      document.body.classList.add('modal-open');
+    },
+
     close() {
       this.listModal.showBooklistModal = false;
       this.listModal.clickedBooklist = null;
       this.listModal.clickedBooklistObject = null;
+      this.profile.userId = "";
+      this.profile.showUserProfile = false;
       this.conversationModal.userId = "";
       this.conversationModal.showConversationModal = false;
       document.body.classList.remove('modal-open');
@@ -150,7 +187,8 @@ export default {
       "getBooklists",
       "getConversations",
       "getAllMessages",
-      "getRealtimeUpdateMessages"
+      "getRealtimeUpdateMessages",
+      "getAllUsers"
     ]),
     userInfo() {
       return this.getCurrentUserProfile
@@ -158,18 +196,29 @@ export default {
     defaultProfilePicture() {
       return this.getDefaultProfilePicture
     },
-    
 
-    // BOOKLISTS
-
-    booklists() {
-      return this.getBooklists
-    },
     checkIfListNameAlreadyExists() {
       return this.getBooklists.some(item => item.listName === this.newListName)
     },
-  
-    
+
+    sortedBooklists() {
+      let booklistsArray = [...this.getBooklists];
+      booklistsArray.sort((a, b) => a.listName.localeCompare(b.listName));
+      return booklistsArray
+    },
+
+    sortedConversations() {
+      let conversationArray = [...this.getConversations];
+      conversationArray.sort((a, b) => a.userName.localeCompare(b.userName));
+      return conversationArray
+    },
+
+    sortedUsers() {
+      let userArray = [...this.getAllUsers];
+      userArray.sort((a, b) => a.userName.localeCompare(b.userName));
+      return userArray
+    }
+
   },
   watch: {
     getRealtimeUpdateMessages() {
@@ -218,6 +267,47 @@ export default {
   flex-direction: column;
   margin-left: 20px;
   padding-top: 1em;
+}
+
+// SEARCH FOR USERS
+
+.search-user__form {
+  @include set-background($color-medium-blue);
+  grid-area: sidebar;
+  align-self: start;
+  border-radius: 10px;
+  border: 1px solid $color-dark-grey;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+}
+
+.search-user__heading {
+  font-size: 1.7rem;
+  padding: 0.3rem;
+  border-bottom: 1px solid $color-dark-grey;
+  text-align: center;
+}
+
+.select-list {
+  width: 100%;
+  background-color: $color-white;
+  margin-bottom: 1em;
+  border-bottom: 1px solid $color-dark-grey;
+}
+
+.search-user__options {
+  color: darken($color-light-grey, 20%);
+}
+
+.search-user__link {
+  color: $color-white;
+  font-weight: bold;
+
+  &:hover,
+  &:focus {
+    color: $color-dark-blue;
+  }
 }
 
 // CONVERSATIONS
@@ -375,7 +465,8 @@ export default {
   }
  
   .user__booklists, 
-  .user__conversations {
+  .user__conversations,
+  .search-user__form {
     margin: 0;
   }
 

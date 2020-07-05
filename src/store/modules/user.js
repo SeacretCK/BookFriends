@@ -11,7 +11,8 @@ const state = {
   allMessages: [],
   conversationsWithUsers: [],
   userConversation: [],
-  newIncomingMessages: []
+  newIncomingMessages: [],
+  allUsers: []
 };
 
 const getters = {
@@ -22,7 +23,8 @@ const getters = {
   getAllMessages: state => state.allMessages,
   getConversations: state => state.conversationsWithUsers,
   getUserConversation: state => state.userConversation,
-  getRealtimeUpdateMessages: state => state.newIncomingMessages
+  getRealtimeUpdateMessages: state => state.newIncomingMessages,
+  getAllUsers: state => state.allUsers
 };
 
 const actions = {
@@ -239,6 +241,27 @@ const actions = {
   },
   clearUserConversation({ commit }) {
     commit("clearUserConversation");
+  },
+
+  setAllUsers({ commit }) {
+    let allUsers = [];
+    usersCollection
+    .get()
+    .then(res => {
+      res.docs.forEach(doc => {
+        if (doc.id !== state.currentUser.uid) {
+          let user = {};
+          user.userName = doc.data().name;
+          user.userId = doc.id;
+          allUsers.push(user);
+        }
+      })
+      console.log("setAllUsers", allUsers)
+      commit("setAllUsers", allUsers)
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 };
 
@@ -269,6 +292,9 @@ const mutations = {
   },
   realtimeUpdateMessages(state, newIncomingMessage) {
     state.newIncomingMessages = [...state.newIncomingMessages, ...newIncomingMessage];
+  },
+  setAllUsers(state, allUsers) {
+    state.allUsers = allUsers;
   }
 };
 
