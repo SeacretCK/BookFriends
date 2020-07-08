@@ -131,7 +131,7 @@
 	z-index: 9999;
 
 	p {
-		background: $color-white;
+		@include set-background($color-white);
 		width: 150px;
 		text-align: center;
 		margin: 40vh auto 0;

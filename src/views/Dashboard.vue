@@ -1,5 +1,12 @@
 <template>
   <div class="wrapper">
+
+    <transition name="fade">
+      <div v-if="performingRequest" class="loading">
+        <p>Loading...</p>
+      </div>
+    </transition>
+
     <section class="section section-user">
       <h1 class="welcome__heading">Welcome to your Dashboard <span class="welcome__user-name">{{ userInfo.name }}</span> !</h1>
       
@@ -117,7 +124,8 @@ export default {
       profile: {
         userId: "",
         showUserProfile: false
-      }
+      },
+      performingRequest: true
     }
   },
   created() {
@@ -125,6 +133,11 @@ export default {
     this.setAllMessages();
     this.realtimeUpdateMessages();
     this.setAllUsers();
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.performingRequest = false;
+    })
   },
   methods: {
     ...mapActions([
