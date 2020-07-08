@@ -113,7 +113,7 @@ export default {
           })
         })
         console.log("fetched booklistArray: ", booklistArray)
-        this.booklists = booklistArray;
+        this.booklists = booklistArray.sort((a, b) => a.listName.localeCompare(b.listName));
       })
       .catch(err => {
         console.log(err);
