@@ -1,4 +1,4 @@
-import { postsCollection } from "@/firebaseConfig"
+import { postsCollection, usersCollection } from "@/firebaseConfig"
 //import firebase from "firebase";
 
 const state = {
@@ -21,6 +21,20 @@ const actions = {
         querySnapshot.docs.forEach(doc => {
           let post = doc.data();
           post.id = doc.id;
+
+          //userName and signature should be fetched with the id, because users can change that
+
+          usersCollection
+            .doc(post.userId)
+            .get()
+            .then(res => {
+              post.userName = res.data().name;
+              post.userSignature = res.data().signature;
+            })
+            .catch(err => {
+              console.log(err);
+            })
+
           postsArray.push(post);
         });
         console.log("setPosts", postsArray)

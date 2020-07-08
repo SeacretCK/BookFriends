@@ -64,7 +64,8 @@ export default {
           title: this.post.title,
           content: this.post.content,
           userId: this.getCurrentUser.uid,
-          userName: this.getCurrentUserProfile.name,
+          //userName: this.getCurrentUserProfile.name,
+          // userName shouldn't be included, because users can change their name - only id should be used to identify
           comments: 0,
           likes: 0,
           usersThatLiked: []

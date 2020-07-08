@@ -10,6 +10,12 @@
         <p v-show="showSuccessTransition" class="success">Profile updated</p>
       </transition>
 
+      <transition name="fade">
+        <div v-if="performingRequest" class="loading">
+          <p>Updating...</p>
+        </div>
+      </transition>
+
       <div class="profile">
         <form class="form profile-form" @submit.prevent>
           <label for="name" class="label profile-form__label-name">Name</label>
@@ -69,7 +75,8 @@ export default {
   name: "Profile",
   data() {
     return {
-      showSuccessTransition: false
+      showSuccessTransition: false,
+      performingRequest: false
     }
   },
   computed: {
@@ -106,6 +113,7 @@ export default {
       "setCurrentUserProfile"
     ]),
     uploadImage(e) {
+      this.performingRequest = true;
       const file = e.target.files[0];
       console.log(file)
       const storageRef = storage.ref(`${this.getCurrentUser.uid}_profilePicture`)
@@ -132,6 +140,7 @@ export default {
           console.log('File available at', downloadURL);
           this.profileForm.image = downloadURL;
           this.updateProfile(this.profileForm);
+          
         });
       });
 
@@ -161,6 +170,9 @@ export default {
     showSuccess(newValue, oldValue) {
       console.log(`Updating from ${oldValue} to ${newValue}`);
       this.showSuccessTransition = newValue;
+      if (newValue === true) {
+        this.performingRequest = false;
+      }
     }
   }
 }

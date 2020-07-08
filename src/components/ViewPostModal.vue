@@ -53,6 +53,7 @@
           <div class="post__content">
             <p class="post-content">{{ post.content }}</p>
           </div>
+          <p class="signature" v-if="post.userSignature"> &lt;&lt;{{ post.userSignature }}&gt;&gt; </p>
 
           <br>
 
@@ -68,6 +69,7 @@
                   </span>
                 </span>
                 on {{ comment.createdOn | formatDate }}</p>
+              <p class="signature" v-if="comment.userSignature"> &lt;&lt;{{ comment.userSignature }}&gt;&gt; </p>
             </div>
           </div>
           
@@ -98,7 +100,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
-import { commentsCollection, postsCollection } from "@/firebaseConfig"
+import { usersCollection, commentsCollection, postsCollection } from "@/firebaseConfig"
 import UserProfile from "@/components/UserProfile.vue"
 import ConversationModal from "@/components/ConversationModal.vue"
 
@@ -155,6 +157,18 @@ export default {
           docs.forEach(doc => {
             let comment = doc.data();
             comment.id = doc.id;
+
+            usersCollection
+              .doc(comment.userId)
+              .get()
+              .then(res => {
+                comment.userName = res.data().name;
+                comment.userSignature = res.data().signature;
+              })
+              .catch(err => {
+                console.log(err);
+              })
+            
             commentsArray.push(comment);
           });
 
@@ -175,7 +189,8 @@ export default {
           content: this.comment.content,
           postId: postId,
           userId: this.getCurrentUser.uid,
-          userName: this.getCurrentUserProfile.name
+          //userName: this.getCurrentUserProfile.name
+          // userName shouldn't be included, because users can change their name - only id should be used to identify
         })
         .then(() => {
           postsCollection
@@ -326,6 +341,14 @@ export default {
 
   .comment-content {
     margin: 0.5rem 1rem 1rem 1rem;
+  }
+
+  .signature {
+    border-top: 1px dotted $color-dark-grey;
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 0.5rem;
+    margin-left: 1rem;
   }
 
   .infos {
