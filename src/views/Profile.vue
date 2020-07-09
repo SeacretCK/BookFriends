@@ -132,6 +132,7 @@ export default {
         console.log('Upload is ' + progress + '% done');
       }, error => {
         // Handle unsuccessful uploads
+        this.$vToastify.error(error.message);
         console.log(error)
       }, () => {
         // Handle successful uploads on complete
@@ -159,9 +160,11 @@ export default {
             console.log("profile updated");
           })
           .catch(err => {
+            this.$vToastify.error(err.message);
             console.log(err);
           });
         }).catch(error => {
+          this.$vToastify.error(error.message);
           console.log(error)
         })
     }

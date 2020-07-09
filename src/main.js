@@ -14,6 +14,9 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 import vSelect from 'vue-select'
 Vue.component('v-select', vSelect)
 
+import VueToastify from "vue-toastify";
+Vue.use(VueToastify);
+
 Vue.config.productionTip = false
 
 // handle page reloads

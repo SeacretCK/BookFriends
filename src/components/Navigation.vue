@@ -53,6 +53,7 @@ export default {
           this.$router.push("/");
         })
         .catch(err => {
+          this.$vToastify.error(err.message);
           console.log(err);
         });
     }

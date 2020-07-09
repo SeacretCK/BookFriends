@@ -117,6 +117,7 @@ export default {
           
         })
         .catch(err => {
+          this.$vToastify.error(err.message);
           console.log(err);
         });
     },
@@ -156,6 +157,7 @@ export default {
             console.log("message set to read", message.id)
           })
           .catch(err => {
+            this.$vToastify.error(err.message);
             console.log(err)
           });
         }

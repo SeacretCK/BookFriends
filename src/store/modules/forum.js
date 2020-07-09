@@ -22,7 +22,7 @@ const actions = {
           let post = doc.data();
           post.id = doc.id;
 
-          //userName and signature should be fetched with the id, because users can change that
+          //userName and signature should be fetched with the id, because users can change their name/signature
 
           usersCollection
             .doc(post.userId)
@@ -32,6 +32,7 @@ const actions = {
               post.userSignature = res.data().signature;
             })
             .catch(err => {
+              this._vm.$vToastify.error(err.message);
               console.log(err);
             })
 
@@ -41,6 +42,7 @@ const actions = {
         commit("setPosts", postsArray);
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
         

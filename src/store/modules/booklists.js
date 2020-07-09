@@ -27,6 +27,7 @@ const actions = {
         dispatch("setBooklists");
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
   },
@@ -39,6 +40,7 @@ const actions = {
         dispatch("setBooklists");
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
   },
@@ -61,6 +63,7 @@ const actions = {
         commit("setBooklists", booklistArray);
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
   },
@@ -91,10 +94,14 @@ const actions = {
             dispatch("setBooklists");
           })
           .catch(err => {
+            this._vm.$vToastify.error(err.message);
             console.log(err);
           });
           })
-      .catch(error => console.log(error))
+      .catch(error => {
+        this._vm.$vToastify.error(error.message);
+        console.log(error)
+      })
 
     
   },
@@ -119,6 +126,7 @@ const actions = {
         dispatch("setBooklists");
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
   },
@@ -134,6 +142,7 @@ const actions = {
         dispatch("setBooklists");
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
   },
@@ -158,6 +167,7 @@ const actions = {
         dispatch("setBooklists");
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
 
@@ -184,6 +194,7 @@ const actions = {
       console.log("successfully deleted");
     })
     .catch(err => {
+      this._vm.$vToastify.error(err.message);
       console.log(err);
     });
     console.log("deletedBook", deletedBook)
@@ -220,7 +231,10 @@ const actions = {
             }
           );
         })
-        .catch(error => console.log(error))
+        .catch(error => {
+          this._vm.$vToastify.error(error.message);
+          console.log(error)
+        })
     });
     console.log("fetched books to be set: ", fetchedBooks);
     commit("setBooksInBooklist", fetchedBooks);

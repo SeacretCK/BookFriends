@@ -39,6 +39,7 @@ const actions = {
         commit("setCurrentUserProfile", res.data());
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
   },
@@ -61,6 +62,7 @@ const actions = {
         dispatch("showSuccess")
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
   },
@@ -114,10 +116,12 @@ const actions = {
           dispatch("setConversations");
         })
         .catch(err => {
+          this._vm.$vToastify.error(err.message);
           console.log(err);
         });
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
   },
@@ -216,6 +220,7 @@ const actions = {
         user.userImage = res.data().image;
       })
       .catch(err => {
+        this._vm.$vToastify.error(err.message);
         console.log(err);
       });
     })
@@ -260,6 +265,7 @@ const actions = {
       commit("setAllUsers", allUsers)
     })
     .catch(err => {
+      this._vm.$vToastify.error(err.message);
       console.log(err)
     })
   }

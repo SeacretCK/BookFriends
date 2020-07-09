@@ -166,6 +166,7 @@ export default {
                 comment.userSignature = res.data().signature;
               })
               .catch(err => {
+                this.$vToastify.error(err.message);
                 console.log(err);
               })
             
@@ -176,6 +177,7 @@ export default {
           this.comment.counter = commentsArray.length
         })
         .catch(err => {
+          this.$vToastify.error(err.message);
           console.log(err);
         });
     },
@@ -205,10 +207,12 @@ export default {
               this.comment.content = "";
             })
             .catch(err => {
+              this.$vToastify.error(err.message);
               console.log(err);
             });
         })
         .catch(err => {
+          this.$vToastify.error(err.message);
           console.log(err);
         });
     },
@@ -229,6 +233,7 @@ export default {
             this.setPosts();
           })
           .catch(err => {
+            this.$vToastify.error(err.message);
             console.log(err);
           });
       }
@@ -249,6 +254,7 @@ export default {
           this.setPosts();
         })
         .catch(err => {
+          this.$vToastify.error(err.message);
           console.log(err);
         });
     },

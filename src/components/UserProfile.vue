@@ -75,6 +75,7 @@ export default {
         this.userInfo = res.data();
       })
       .catch(err => {
+        this.$vToastify.error(err.message);
         console.log(err);
       });
     },
@@ -116,6 +117,7 @@ export default {
         this.booklists = booklistArray.sort((a, b) => a.listName.localeCompare(b.listName));
       })
       .catch(err => {
+        this.$vToastify.error(err.message);
         console.log(err);
       });
   }
