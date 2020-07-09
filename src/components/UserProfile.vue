@@ -29,6 +29,7 @@
 
           <div class="user__booklists">
             <h2 class="booklist__heading">{{ userInfo.name }}'s booklists</h2>
+            <p class="booklist__empty-info" v-if="!booklists.length">There are no lists yet</p>
             <div v-for="list in booklists" :key="list.listId">
               <div class="booklist__item" tabindex="0">
                 <div class="booklist__name" @click="showBooklist(list.listId)">
@@ -169,8 +170,12 @@ export default {
 
 .booklist__heading {
   font-size: 1.7rem;
-  padding: 0.3em 0;
+  padding: 0.3rem 0.8rem;
   border-bottom: 1px solid $color-dark-grey;
+}
+
+.booklist__empty-info {
+  padding: 0.3rem 0.8rem;
 }
 
 .booklist__item {

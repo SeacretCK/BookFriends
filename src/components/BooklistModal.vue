@@ -6,7 +6,7 @@
           <button type="button" class="button button-close" @click="$emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
         <h2 class="modal__listName"> {{ listName }}</h2>
-        
+        <p v-if="!bookArraySorted.length">The list is empty</p>
         <draggable 
           @end="updateNumbers"
           :disabled=draggable.disabled

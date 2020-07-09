@@ -6,7 +6,7 @@
           <button type="button" class="button button-close" @click="$emit('close')"><font-awesome-icon icon="times"/></button>
         </div>
         <h2 class="modal__listName"> {{ listName }}</h2>
-
+          <p class="modal__empty-info" v-if="!bookArraySorted.length">The list is empty</p>
           <div class="modal__content" v-for="book in bookArraySorted" :key="book.bookId" :id="book.bookId">
 
             <UserBooklistItem :book="book" :booklistId="booklistId" :bookArray="bookArraySorted">
@@ -108,8 +108,12 @@ export default {
   }
 
   .modal__listName {
-    padding: 0.5em;
+    padding: 0.5rem;
     font-size: 2rem;
+  }
+
+  .modal__empty-info {
+    padding: 0.5rem;
   }
 
 </style>
