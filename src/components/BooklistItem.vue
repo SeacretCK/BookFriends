@@ -53,9 +53,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      "setBooklists",
-      "setBooksInBooklist",
-      "updateBookNumbers",
       "updateBookComment",
       "deleteBook"
     ]),
