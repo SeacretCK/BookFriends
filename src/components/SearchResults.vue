@@ -59,7 +59,6 @@ export default {
         clickedBookId: null, 
         clickedBookObject: null
       },
-      //defaultBookImage: "",
       showAddBookModal: false,
     }
   },
@@ -100,7 +99,6 @@ export default {
   computed: {
     ...mapGetters([
       "getSearchResults",
-      "getDefaultProfilePicture",
     ]),
     clickedBookInfo() {
       return this.getSearchResults.filter(item => item.bookId === this.bookModal.clickedBookId)
