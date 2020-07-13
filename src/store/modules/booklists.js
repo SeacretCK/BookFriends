@@ -18,8 +18,6 @@ const actions = {
       .add({
         listName: name,
         userId: rootState.user.currentUser.uid,
-        position: "",
-        status: "",
         books: []
       })
       .then(() => {
@@ -54,8 +52,6 @@ const actions = {
           booklistArray.push({
             listId: list.id,
             listName: list.data().listName,
-            status: list.data().status,
-            position: list.data().position,
             books: list.data().books
           })
         })
