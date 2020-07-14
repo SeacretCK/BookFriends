@@ -307,6 +307,7 @@ export default {
   background-color: $color-white;
   margin-bottom: 1em;
   border-bottom: 1px solid $color-dark-grey;
+  z-index: 0;
 }
 
 .search-user__options {
