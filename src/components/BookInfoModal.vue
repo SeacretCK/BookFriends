@@ -64,19 +64,6 @@ export default {
     }
   },
 
-  // watcher not needed anymore because direct click on the next book prevented by clickaway-detect overlay
-  // idea for later: adding arrows to switch between the books (also useful for booklists)
-
-  // watch: {
-  //   bookInfo() {
-  //     if (this.bookInfo[0].details.description.length > 1200) {
-  //       this.readMore = true;
-  //       this.fullDescription = false;
-  //     } else {
-  //       this.readMore = false;
-  //     }
-  //   }
-  // },
   created() {
       if(this.bookInfo.details.description) {
         if (this.bookInfo.details.description.length > 1200) {
@@ -85,8 +72,7 @@ export default {
         } else {
           this.readMore = false;
         }
-      }
-      
+      }    
   },
   filters: {
     trimLength(val) {
