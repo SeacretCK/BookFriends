@@ -101,31 +101,6 @@ const actions = {
 
     
   },
-  updateBookNumbers({ dispatch }, deletedBook) {
-    const deletedNumber = deletedBook.number;
-    const booklist = state.booklists.filter(item => item.listId === deletedBook.listId);
-    const booksArray = booklist[0].books;
-    let updatedBooklist = [];
-    booksArray.forEach(book => {
-      if(book.number > deletedNumber) {
-        book.number --;
-      }
-      updatedBooklist.push(book);
-    })
-    console.log("updated numbers", updatedBooklist);
-    booklistsCollection
-      .doc(deletedBook.listId)
-      .update({
-        books: updatedBooklist
-      })
-      .then(() => {
-        dispatch("setBooklists");
-      })
-      .catch(err => {
-        this._vm.$vToastify.error(err.message);
-        console.log(err);
-      });
-  },
 
   setNewSorting({ dispatch }, update) {
     console.log("setNewSorting", update)
@@ -175,37 +150,41 @@ const actions = {
   },
 
   deleteBook({ dispatch }, deletedBook) {
-    console.log("deleted book", deletedBook);
+
+      const deletedNumber = deletedBook.number;
+      const booklist = state.booklists.filter(item => item.listId === deletedBook.listId);
+      // filter out the deleted book
+      const newBooksArray = booklist[0].books.filter(book => book.bookId !== deletedBook.bookId);
+      let updatedBooklist = [];
+      newBooksArray.forEach(book => {
+        if(book.number > deletedNumber) {
+          book.number --;
+        }
+        updatedBooklist.push(book);
+      })
+      console.log("updated numbers", updatedBooklist);
+      
+      booklistsCollection
+        .doc(deletedBook.listId)
+        .update({
+          books: updatedBooklist
+        })
+        .then(() => {
+          console.log("successfully deleted");
+          dispatch("setBooklists");
+          setTimeout(() => {
+            // timeout because setBooksInBookslist takes the booklists from the state - maybe better to get it directly from firebase
+            console.log("timeout setBooksInBooklist");
+            dispatch("setBooksInBooklist", deletedBook.listId);
+          }, 2000);
+        })
+        .catch(err => {
+          this._vm.$vToastify.error(err.message);
+          console.log(err);
+        });
+ 
+      console.log("deleted book", deletedBook);
     
-    const booklist = state.booklists.filter(item => item.listId === deletedBook.listId);
-    const booksArray = booklist[0].books;
-    
-    booklistsCollection
-    .doc(deletedBook.listId)
-    .update({
-      // replacing books with everything except the deleted book
-      books: booksArray.filter(book => book.bookId !== deletedBook.bookId)
-    })
-    .then(() => {
-      console.log("successfully deleted");
-    })
-    .catch(err => {
-      this._vm.$vToastify.error(err.message);
-      console.log(err);
-    });
-    console.log("deletedBook", deletedBook)
-    setTimeout(() => {
-      console.log("timeout setBooklists");
-      dispatch("setBooklists");
-    }, 2000);
-    setTimeout(() => {
-      console.log("timeout updateBookNumbers");
-      dispatch("updateBookNumbers", deletedBook);
-    }, 3000);
-    setTimeout(() => {
-      console.log("timeout setBooksInBooklist");
-      dispatch("setBooksInBooklist", deletedBook.listId);
-    }, 4000);
   },
 
   setBooksInBooklist({ state, commit }, listId) {
