@@ -14,7 +14,7 @@
         <p v-if="book.details.authors" class="book__author"> {{ book.details.authors.toString() }} </p>
       </div>
       <div class="book__addButton">
-        <button type="button" class="button" @click="openAddBookModal()">Add to Booklist</button>
+        <button type="button" class="button" @click="openAddBookModal(book.bookId)">Add to Booklist</button>
       </div> 
       
     </div>
@@ -56,8 +56,8 @@ export default {
     return {
       bookModal: {
         showBookInfoModal: false,
-        clickedBookId: null, 
-        clickedBookObject: null
+        clickedBookId: "", 
+        clickedBookObject: []
       },
       showAddBookModal: false,
     }
@@ -68,13 +68,16 @@ export default {
       "runAdvancedSearch"
     ]),
     bookDetails(id) {
-      this.bookModal.showBookInfoModal = true;
       this.bookModal.clickedBookId = id;
       this.bookModal.clickedBookObject = this.clickedBookInfo[0];
+      this.bookModal.showBookInfoModal = true;
       document.body.classList.add('modal-open');
     },
-    openAddBookModal() {
+    openAddBookModal(id) {
+      this.bookModal.clickedBookId = id;
+      this.bookModal.clickedBookObject = this.clickedBookInfo[0];
       this.showAddBookModal = true;
+      document.body.classList.add('modal-open');
     },
     close() {
       this.bookModal.showBookInfoModal = false;
