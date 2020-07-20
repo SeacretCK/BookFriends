@@ -140,6 +140,7 @@ export default {
   created() {
     this.getComments();
     console.log("post: ", this.post)
+    console.log("commentsArray", this.postComments)
   },
 
   methods: {
@@ -147,13 +148,13 @@ export default {
       "setPosts"
     ]),
     getComments() {
+      let commentsArray = [];
+
       commentsCollection
         .where("postId", "==", this.post.id)
         .orderBy("createdOn", "asc")
         .get()
         .then(docs => {
-          let commentsArray = [];
-
           docs.forEach(doc => {
             let comment = doc.data();
             comment.id = doc.id;
@@ -162,18 +163,19 @@ export default {
               .doc(comment.userId)
               .get()
               .then(res => {
+                console.log("getting name and signature")
                 comment.userName = res.data().name;
                 comment.userSignature = res.data().signature;
+                commentsArray.push(comment);
+                console.log("commentsArray", commentsArray)
               })
               .catch(err => {
                 this.$vToastify.error(err.message);
                 console.log(err);
               })
-            
-            commentsArray.push(comment);
-          });
-
+          })          
           this.postComments = commentsArray;
+          console.log("this.postComments", this.postComments)
           this.comment.counter = commentsArray.length
         })
         .catch(err => {
