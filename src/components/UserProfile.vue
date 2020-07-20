@@ -13,7 +13,7 @@
         <div class="modal__content">
 
           <div class="user__profile">
-            <h2> {{ userInfo.name }} </h2>
+            <h1 class="profile__heading"> {{ userInfo.name }} </h1>
             <div class="profile-container">
               <img :src="userInfo.image || defaultProfilePicture" alt="profile picture" class="profile-picture">
               <div class="profile-info" v-if="userInfo.favoriteBook || userInfo.aboutMe">
@@ -61,7 +61,7 @@ export default {
   ],
   data() {
     return {
-      userInfo: null,
+      userInfo: [],
       showUserBooklistModal: false,
       booklistId: "",
       booklists: [],
@@ -80,6 +80,30 @@ export default {
         console.log(err);
       });
     },
+    getUserBooklists() {
+      let booklistArray = [];
+      booklistsCollection
+        .where("userId", "==", this.userId)
+        .get()
+        .then(res => {
+          res.docs.forEach(list => {
+            booklistArray.push({
+              listId: list.id,
+              listName: list.data().listName,
+              status: list.data().status,
+              position: list.data().position,
+              books: list.data().books
+            })
+          })
+          console.log("fetched booklistArray: ", booklistArray)
+          this.booklists = booklistArray.sort((a, b) => a.listName.localeCompare(b.listName));
+        })
+        .catch(err => {
+          this.$vToastify.error(err.message);
+          console.log(err);
+        });
+    },
+
     showBooklist(id) {
       this.booklistId = id;
       this.showUserBooklistModal = true;
@@ -99,28 +123,8 @@ export default {
   },
   created() {
     this.getUserInfo();
-
-    let booklistArray = [];
-    booklistsCollection
-      .where("userId", "==", this.userId)
-      .get()
-      .then(res => {
-        res.docs.forEach(list => {
-          booklistArray.push({
-            listId: list.id,
-            listName: list.data().listName,
-            status: list.data().status,
-            position: list.data().position,
-            books: list.data().books
-          })
-        })
-        console.log("fetched booklistArray: ", booklistArray)
-        this.booklists = booklistArray.sort((a, b) => a.listName.localeCompare(b.listName));
-      })
-      .catch(err => {
-        this.$vToastify.error(err.message);
-        console.log(err);
-      });
+    this.getUserBooklists();
+   
   }
 }
 </script>
@@ -136,6 +140,11 @@ export default {
 .profile-container {
   display: flex;
   justify-content: flex-start;
+}
+
+.profile__heading {
+  font-size: 2rem;
+  padding: 0.3rem 0.8rem;
 }
 
 .profile-picture {
