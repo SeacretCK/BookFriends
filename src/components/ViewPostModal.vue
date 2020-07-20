@@ -163,11 +163,9 @@ export default {
               .doc(comment.userId)
               .get()
               .then(res => {
-                console.log("getting name and signature")
                 comment.userName = res.data().name;
                 comment.userSignature = res.data().signature;
                 commentsArray.push(comment);
-                console.log("commentsArray", commentsArray)
               })
               .catch(err => {
                 this.$vToastify.error(err.message);
@@ -175,7 +173,6 @@ export default {
               })
           })          
           this.postComments = commentsArray;
-          console.log("this.postComments", this.postComments)
           this.comment.counter = commentsArray.length
         })
         .catch(err => {
