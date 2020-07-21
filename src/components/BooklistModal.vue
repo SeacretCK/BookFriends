@@ -7,6 +7,7 @@
         </div>
         <h2 class="modal__listName"> {{ listName }}</h2>
         <p v-if="!bookArraySorted.length">The list is empty</p>
+        <p v-if="bookArraySorted.length > 1">Sort your list with drag & drop</p>
         <draggable 
           @end="updateNumbers"
           :disabled=draggable.disabled
