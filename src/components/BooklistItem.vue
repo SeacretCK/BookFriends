@@ -1,7 +1,7 @@
 <template>
   <div class="card__container"> 
 
-    <div class="card__imageBox draggable-handle">
+    <div class="card__imageBox" @click="bookDetails()">
       <img class="book__image"
           v-if="book.details.imageLinks" 
           :src="book.details.imageLinks.thumbnail || book.details.imageLinks.smallThumbnail">
@@ -26,14 +26,22 @@
       <button type="button" class="button button-close" @click="remove"><font-awesome-icon icon='trash-alt' class="button__icon"/></button>
     </div>
 
+    <section class="section section-bookInfoModal" v-if="showBookInfoModal">
+      <BookInfoModal v-on:close="close" :bookInfo="book"></BookInfoModal>
+    </section>
+
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import BookInfoModal from "@/components/BookInfoModal.vue";
 
 export default {
   name: "BooklistItem",
+  components: {
+    BookInfoModal
+    },
   props: [
     "book",
     "booklistId",
@@ -48,7 +56,8 @@ export default {
         listId: this.booklistId,
         number: ""
       },
-      comment: this.book.comment
+      comment: this.book.comment,
+      showBookInfoModal: false
     }
   },
   methods: {
@@ -71,7 +80,15 @@ export default {
       this.updateBookComment(this.updatedBook)
       this.editableComment = false;
       this.$emit("enableDraggable");
-    }
+    },
+    bookDetails() {
+      this.showBookInfoModal = true;
+      document.body.classList.add('modal-open');
+    },
+    close() {
+      this.showBookInfoModal = false;
+      document.body.classList.remove('modal-open');
+    },
   },
   computed: {
   }
@@ -89,6 +106,7 @@ export default {
     width: 40%;
     padding: 10px;
     text-align: left;
+    cursor: pointer;
   }
 
   .book__image {
