@@ -2,7 +2,6 @@ import { usersCollection, messagesCollection } from "@/firebaseConfig";
 //import router from '@/router'
 
 const state = {
-  apiKey: process.env.VUE_APP_API_KEY,
   currentUser: null,
   currentUserProfile: {},
   booklist: [],

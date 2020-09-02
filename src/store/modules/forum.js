@@ -2,7 +2,6 @@ import { postsCollection, usersCollection } from "@/firebaseConfig";
 //import firebase from "firebase";
 
 const state = {
-  apiKey: process.env.VUE_APP_API_KEY,
   posts: []
 };
 

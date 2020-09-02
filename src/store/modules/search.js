@@ -76,7 +76,7 @@ const actions = {
   },
   runSearch({ commit }, searchString) {
     fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${searchString}&key=${state.apiKey}`
+      `https://www.googleapis.com/books/v1/volumes?q=${searchString}&key="${state.apiKey}"`
     )
       .then((response) => response.json())
       .then((data) => {
