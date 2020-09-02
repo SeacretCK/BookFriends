@@ -4,7 +4,7 @@ import firebase from "firebase";
 const state = {
   booklists: [],
   booksInBooklist: [],
-  apiKey: process.env.VUE_APP_API_KEY
+  apiKey: process.env.VUE_APP_GOOGLEBOOKS_API_KEY
 };
 
 const getters = {
@@ -77,7 +77,7 @@ const actions = {
     };
 
     fetch(
-      `https://www.googleapis.com/books/v1/volumes/${newBook.bookId}?key="${state.apiKey}"`
+      `https://www.googleapis.com/books/v1/volumes/${newBook.bookId}?key=${state.apiKey}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -199,7 +199,7 @@ const actions = {
     let fetchedBooks = [];
     booksArray.forEach((book) => {
       fetch(
-        `https://www.googleapis.com/books/v1/volumes/${book.bookId}?key="${state.apiKey}"`
+        `https://www.googleapis.com/books/v1/volumes/${book.bookId}?key=${state.apiKey}`
       )
         .then((response) => response.json())
         .then((data) => {

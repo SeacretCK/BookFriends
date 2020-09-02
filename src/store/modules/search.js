@@ -1,5 +1,5 @@
 const state = {
-  apiKey: process.env.VUE_APP_API_KEY,
+  apiKey: process.env.VUE_APP_GOOGLEBOOKS_API_KEY,
   searchResults: [],
   errorMessage: ""
 };
@@ -76,7 +76,7 @@ const actions = {
   },
   runSearch({ commit }, searchString) {
     fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${searchString}&key="${state.apiKey}"`
+      `https://www.googleapis.com/books/v1/volumes?q=${searchString}&key=${state.apiKey}`
     )
       .then((response) => response.json())
       .then((data) => {
