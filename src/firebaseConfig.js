@@ -4,7 +4,6 @@ import "firebase/auth";
 import "firebase/storage";
 
 // firebase init
-console.log(process.env);
 const config = {
   apiKey: process.env.VUE_APP_API_KEY,
   authDomain: "bookfriends-8ad5b.firebaseapp.com",
