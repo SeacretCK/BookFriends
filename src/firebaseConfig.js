@@ -4,15 +4,15 @@ import "firebase/auth";
 import "firebase/storage";
 
 // firebase init
+console.log(process.env);
 const config = {
-  apiKey: "AIzaSyB_t_4hS4ZfKuYFzsMSbL-w9_CZdrNXX4U",
+  apiKey: process.env.VUE_APP_API_KEY,
   authDomain: "bookfriends-8ad5b.firebaseapp.com",
   databaseURL: "https://bookfriends-8ad5b.firebaseio.com",
   projectId: "bookfriends-8ad5b",
   storageBucket: "bookfriends-8ad5b.appspot.com",
-  messagingSenderId: "58628209996",
-  appId: "1:58628209996:web:1fb81d39ecc15e5c0e23e9"
-
+  messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_APP_ID
 };
 
 firebase.initializeApp(config);
