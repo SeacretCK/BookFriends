@@ -1,13 +1,13 @@
-import { postsCollection, usersCollection } from "@/firebaseConfig"
+import { postsCollection, usersCollection } from "@/firebaseConfig";
 //import firebase from "firebase";
 
 const state = {
-  apiKey: "AIzaSyAiFCyH0fZG1Ox7mvFncKsaQ2ms61D8t5Y",
+  apiKey: process.env.VUE_APP_API_KEY,
   posts: []
 };
 
 const getters = {
-  getPosts: state => state.posts
+  getPosts: (state) => state.posts
 };
 
 const actions = {
@@ -17,8 +17,8 @@ const actions = {
     postsCollection
       .orderBy("createdOn", "desc")
       .get()
-      .then(querySnapshot => {
-        querySnapshot.docs.forEach(doc => {
+      .then((querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
           let post = doc.data();
           post.id = doc.id;
 
@@ -27,25 +27,24 @@ const actions = {
           usersCollection
             .doc(post.userId)
             .get()
-            .then(res => {
+            .then((res) => {
               post.userName = res.data().name;
               post.userSignature = res.data().signature;
             })
-            .catch(err => {
+            .catch((err) => {
               this._vm.$vToastify.error(err.message);
               console.log(err);
-            })
+            });
 
           postsArray.push(post);
         });
-        console.log("setPosts", postsArray)
+        console.log("setPosts", postsArray);
         commit("setPosts", postsArray);
       })
-      .catch(err => {
+      .catch((err) => {
         this._vm.$vToastify.error(err.message);
         console.log(err);
       });
-        
   }
 };
 
