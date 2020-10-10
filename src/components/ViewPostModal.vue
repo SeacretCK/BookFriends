@@ -123,7 +123,7 @@ export default {
         userId: "",
         userName: "",
         content: "",
-        counter: ""
+        counter: this.post.comments
       },
       alert: "",
       showUserProfile: false,
@@ -173,7 +173,6 @@ export default {
               })
           })          
           this.postComments = commentsArray;
-          this.comment.counter = commentsArray.length
         })
         .catch(err => {
           this.$vToastify.error(err.message);
@@ -190,7 +189,7 @@ export default {
           content: this.comment.content,
           postId: postId,
           userId: this.getCurrentUser.uid,
-          //userName: this.getCurrentUserProfile.name
+          // userName: this.getCurrentUserProfile.name
           // userName shouldn't be included, because users can change their name - only id should be used to identify
         })
         .then(() => {
